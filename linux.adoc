@@ -1,0 +1,72 @@
+== Linux logging setup with `syslog-ng`
+
+Any syslog compatible source can be used, as long as it supports specifying
+a message template that will include source `IP` and `CUSTOMER_TOKEN`
+within square brackets. I.e. `[IP][CUSTOMER_TOKEN] msg...`.
+
+=== syslog-ng
+
+A configuration snippet for `syslog-ng` relay setup is provided below. Note it uses
+a built-in `$SOURCEIP` macro which fills-in the IP address of the incoming source.
+You can replace it with a specific value (as long as it is a valid IP
+address) if the original address is being lost during forwarding the
+messages.
+
+NOTE: `CUSTOMER_TOKEN` must be replaced with the token provided to you.
+
+....
+@version: 3.13
+
+@include "scl.conf"
+
+# LogSense configuration section start
+
+source s_log_sense {
+    system(); # Check which OS & collect system logs
+    internal(); # Collect syslog-ng logs
+};
+
+template LogSenseFormat { template("[$SOURCEIP][CUSTOMER_TOKEN]<${PRI}>1 ${ISODATE} ${HOST} ${PROGRAM} ${PID} ${MSGID} ${MSG}\n");
+    template_escape(no);
+};
+
+destination d_log_sense_tls {
+    tcp("logs.logsense.com" port(32614)
+    tls()
+    template(LogSenseFormat));
+};
+
+destination d_log_sense_tcp {
+    tcp("logs.logsense.com" port(32514)
+    template(LogSenseFormat));
+};
+
+destination d_log_sense_udp {
+    udp("logs.logsense.com" port(32514)
+    template(LogSenseFormat));
+};
+
+log {
+    source(s_log_sense);
+
+    # Please uncomment the protocol you want to use
+    # destination(d_log_sense_tls);
+    destination(d_log_sense_tcp);
+    # destination(d_log_sense_udp);
+};
+
+# Collective Sense configuration section end
+@include "/etc/syslog-ng/conf.d/*.conf"
+....
+
+=== (Optional) testing syslog-ng relay
+
+If `syslog-ng` relay was set it should be enough to run `logger`
+(typically preinstalled on Linux machines) which sends a message to the
+syslog acting now as a relay. For instance:
+
+....
+$ logger "Syslog-ng relay test"
+....
+
+

@@ -1,0 +1,69 @@
+:source-highlighter: highlight.js
+
+== NodeJS using `fluent-logger`
+
+=== *Step 1:* Add `fluent-logger` dependency
+
+Include fluent-logger in your `package.json`, e.g.:
+
+[source, json]
+----
+"devDependencies": {
+  ...
+  "fluent-logger": "^3.2.2"
+  ...
+}
+----
+
+=== *Step 2:* Create logger instance and a function for wrapping logs
+
+[source, javascript]
+----
+const customerToken = "YOUR CUSTOMER TOKEN"
+const tag = 'nodejs'
+
+const FluentLogger = require('fluent-logger')
+const fluent = FluentLogger.createFluentSender(tag, {
+      host: 'logs.logsense.com',
+      port: 32714,
+      timeout: 0.0,
+      reconnectInterval: 100,
+      requireAckResponse: true,
+      enableReconnect: false,
+      tls: true
+    })
+
+function emitLog(message, data={}, callback) {
+  const fluentMessage = {
+    // This is required key, used to identify and authorize client
+    cs_customer_token: customerToken,
+    // This one makes `message` key a subject to pattern discovery
+    cs_pattern_key: 'message',
+    // This puts the message as `message`
+    message: message,
+    ...data
+  }
+
+  fluent.emit(tag,
+    fluentMessage,
+    callback)
+}
+
+----
+
+=== *Step 3:* Use the function
+
+The function can be used directly, e.g.
+
+[source, javascript]
+----
+emitLog("Test message", {key: 'value'})
+----
+
+It can be also integrated with other libraries such as
+https://github.com/fluent/fluent-logger-node#logging-library-support[winston]
+or https://www.npmjs.com/package/log4js-fluent-appender[log4js]. There
+are examples on how this could be accomplished at
+https://github.com/fluent/fluent-logger-node#logging-library-support[fluent-logger-node]
+page.
+

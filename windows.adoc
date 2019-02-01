@@ -1,0 +1,110 @@
+:source-highlighter: highlight.js
+
+== Windows Event Logs using td-agent
+
+The suggested solution for sending Windows Event Logs is to use
+`td-agent` - a stable distribution of `fluentd` prepared by Treasure
+Data. The installation process is described in detail here:
+https://docs.fluentd.org/v1.0/articles/install-by-msi[Install by MSI]
+
+NOTE: `td-agent v3.1` or newer is required.
+
+We are going to use
+https://docs.fluentd.org/v1.0/articles/in_windows_eventlog[in_windows_eventlog
+plugin] to provide capabilities to read and push Windows Event Logs.
+
+The exact steps are following:
+
+=== *Step 1:* Install td-agent
+
+https://td-agent-package-browser.herokuapp.com/3/windows[Download the
+`.msi` file] and install the software.
+
+=== *Step 2:* Install `windows_eventlog` input plugin
+
+Open `Td-agent Command Prompt` (which was installed by td-agent). In
+command prompt, execute following line:
+
+....
+fluent-gem install fluent-plugin-windows-eventlog
+....
+
+=== *Step 3:* Prepare the config
+
+Open `C:\opt\td-agent\etc\td-agent\td-agent.conf` and add following
+entries. Please replace `CUSTOMER_TOKEN` with the token provided to you
+in the email. The `YOUR_IP` value should be replaced with the IP you
+want the logs be visible as the source.
+
+[source,xml]
+....
+<source>
+  @type windows_eventlog
+  @id windows_eventlog
+  channels application,system,security
+  tag winevt.raw
+  <storage>
+    @type local
+    persistent false
+  </storage>
+</source>
+
+<filter {winevt.raw}.**>
+  @type record_transformer
+  <record>
+    # Please fill the actual token!
+    cs_customer_token "CUSTOMER_TOKEN"
+
+    # Uncomment and enter IP you want the logs to be
+    # associated with as the source
+    # cs_src_ip "YOUR_IP"
+
+    cs_pattern_key "description"
+    cs_source_name "eventlog"
+  </record>
+</filter>
+
+<match winevt.raw.**>
+  @type forward
+
+  # primary host
+  transport tls
+  <server>
+    host logs.logsense.com
+    port 32714
+  </server>
+  flush_interval 10s
+</match>
+....
+
+=== *Step 4:* Test the setup
+
+Open `Command Prompt` as `Administrator`. Navigate to `td-agent` home
+directory and run the agent:
+
+....
+> cd C:\opt\td-agent
+> fluentd -c etc\td-agent\td-agent.conf
+....
+
+If the application starts without errors, it should start sending
+records to logsense.com, where they should be visible in the logs view
+(you can put into search box `logs.source_name=eventlog` to filter for
+them).
+
+Hit Ctrl-C to stop the application
+
+=== *Step 5:* Register fluentd as a service and run it
+
+Using the Administrator console, execute following commands:
+
+....
+> fluentd --reg-winsvc i
+> fluentd --reg-winsvc-fluentdopt '-c C:\opt\td-agent\etc\td-agent\td-agent.conf -o C:\opt\td-agent\td-agent.log'
+....
+
+Go to
+`Control Panel -> System and Security -> Administrative Tools -> Services`.
+Double click on `Fluentd Windows Service` and click Start button.
+
+'''''

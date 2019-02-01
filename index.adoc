@@ -1,0 +1,55 @@
+= Table of contents
+
+LogSense supports wide array of log sources through two popular
+protocols: *syslog* and *fluentd*. Either a generic library or a
+dedicated solution can be used with the only requirement being providing
+`CUSTOMER_TOKEN` (sent in the registration confirmation e-mail) which
+allows to identify and authorize the data stream.
+
+In case of choice between using `fluentd` and `syslog` protocols - it is
+recommended to go with `fluentd` due to a much better support of
+structured logs and better troubleshooting capabilities.
+
+== Generic setup
+* <<nc-test.adoc#, One-liner test command using `nc`>>
+* <<linux.adoc#, Syslog protocol via `syslog-ng`>>
+* <<fluentd.adoc#, Generic `fluentd`-as-a-relay config>>
+
+== Dedicated configuration
+
+=== Programming languages and application servers
+
+* <<java.adoc#,Java, Scala, Clojure, Kotlin, any other *JVM*-based technology>>
+* <<java.adoc#javaee, Java EE Web Applications>>
+* <<nodejs.adoc#, NodeJS>>
+* <<dot-net.adoc#, .NET>>
+
+
+=== Cloud Services
+* <<aws-cloudwatch.adoc, Collecting logs from EC2 instances,
+CloudTrail, Route 53, AWS Lambda and others>>
+
+=== Operating Systems and services
+* <<windows.adoc#,Windows Event Logs (including both operating system and services, such as
+e.g. MS SQL)>>
+* <<linux.adoc#,Linux logs using `syslog-ng`>>
+* <<apache.adoc#, Apache HTTP Server logs using `fluentd`>>
+* <<nginx.adoc#, nginx logs using `fluentd`>>
+
+
+=== Other
+* Do you have an use case not covered by the instructions? mailto:testing@logsense.com[Contact us!]
+
+== Using the application
+
+There are several videos prepared that guide through various parts of
+the application:
+
+* https://www.youtube.com/watch?v=5njTa343aoY[Syslog and fluentd
+integration]
+* https://www.youtube.com/watch?v=eLDzOyUNxOY[Viewing and filtering log
+records]
+* https://www.youtube.com/watch?v=m9wMn7TfSwc[Editing log patterns]
+* https://www.youtube.com/watch?v=VacXUWSOISk[Using custom charts and
+dashboards]
+* https://www.youtube.com/watch?v=dMB_YUWcMH0[Working with anomalies]

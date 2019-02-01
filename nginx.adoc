@@ -1,0 +1,78 @@
+:source-highlighter: highlight.js
+
+== Pushing nginx logs using a fluentd relay
+
+The preferred method to send Apache/Nginx logs is to use `fluentd` in
+case of Linux or `td-agent` in case of Windows or Mac OS X (the latter
+being a special version of fluent, packaged by Treasure Data). They are
+available at https://www.fluentd.org/download[fluentd download page]
+
+=== *Step 1:* Install `fluentd` or `td-agent`
+
+Go to https://www.fluentd.org/download and select preferred version
+
+=== *Step 2:* Prepare the config
+
+The config consists of several sections. Source section specifies
+location of the input files. Filter section adds data required to
+associate the records with given account. Match section specifies the
+output of the log records.
+
+The config typically resides in `/etc/fluentd` (Linux), `/etc/td-agent`
+(macOS) or `C:\opt\td-agent\etc\td-agent\td-agent.conf` (Windows)
+
+Please replace `CUSTOMER_TOKEN` with the token provided to you in the
+email. The `YOUR_IP` value should be replaced with the IP you want the
+logs be visible as the source.
+
+Also, please put the actual location of the log files.
+
+----
+# Access log
+<source>
+  @type tail
+  path ENTER_FULL_PATH_OF_ACCESS_LOG_FILE, e.g. /var/log/nginx/access.log
+  pos_file ENTER_FULL_PATH_OF_ACCESS_LOG_POS_FILE, e.g. /var/log/nginx/access.log.pos
+  tag nginx.access
+  format nginx
+</source>
+
+# Error log
+<source>
+    @type tail
+    tag nginx.error
+    path ENTER_FULL_PATH_OF_ERROR_LOG_FILE, e.g. /var/log/nginx/error.log
+    pos_file ENTER_FULL_PATH_OF_ERROR_LOG_POS_FILE.pos, e.g. /var/log/nginx/error.log.pos
+
+    format multiline
+    format_firstline /^\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} \[\w+\] (?<pid>\d+).(?<tid>\d+): /
+    format1 /^(?<time>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?<log_level>\w+)\] (?<pid>\d+).(?<tid>\d+): (?<message>.*)/
+    multiline_flush_interval 3s
+</source>
+
+<filter {nginx}.**>
+  @type record_transformer
+  <record>
+    # Please fill the actual token!
+    cs_customer_token CUSTOMER_TOKEN
+    cs_pattern_key "message"
+    cs_source_name "nginx"
+
+    # Uncomment and enter IP you want the logs to be
+    # associated with as the source
+    # cs_src_ip "YOUR_IP"
+  </record>
+</filter>
+
+<match nginx.**>
+  @type forward
+
+  transport tls
+  <server>
+    host logs.logsense.com
+    port 32714
+  </server>
+
+  flush_interval 10s
+</match>
+----

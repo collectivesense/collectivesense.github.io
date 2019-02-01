@@ -1,0 +1,203 @@
+:source-highlighter: highlight.js
+
+[#java]
+== Logback-logsense for Java and anything JVM-based
+
+=== *Step 1:* Add logback-logsense dependency
+
+The depdendency is available as a Maven project. You can add it to your `pom.xml` in
+`<dependencies>` section:
+
+[source,xml]
+----
+<dependency>
+ <groupId>com.logsense</groupId>
+ <artifactId>logback-logsense</artifactId>
+ <version>1.0</version>
+</dependency>
+----
+
+This will allow you to use `slf4j` for logging, e.g.
+
+[source,java]
+----
+...
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Example {
+    final Logger logger = LoggerFactory.getLogger(Example.class);
+
+    ...
+
+    private void someMethod() {
+        logger.info("Hello, this is a number: {}", 123);
+    }
+}
+----
+
+The integration source code is available publicly at
+https://github.com/collectivesense/logback-logsense[https://github.com/collectivesense/logback-logsense]
+
+
+=== *Step 2 (Optional):* Add migration dependency if you are using `log4j`
+
+If you are already using `log4j` as the logging library in your project,
+you can simple a migration dependency which will allow you to keep using the same API:
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>log4j-over-slf4j</artifactId>
+	<version>1.7.25</version>
+</dependency>
+----
+
+That will allow to use `log4j` syntax, e.g.:
+
+[source,java]
+----
+import org.apache.log4j.Logger;
+
+public class Example {
+   final Logger logger = Logger.getLogger(Example.class.getName());
+
+   ...
+
+   private void someMethod() {
+       logger.info("Hello, I am using log4j");
+   }
+}
+----
+
+=== *Step 3:* setup `logback.xml` to configure output
+
+Create `src/resources/logback.xml` file with following contents
+(filling-in `CUSTOMER_TOKEN` with the proper value):
+
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE logback>
+<configuration>
+
+    <!-- LogSense appender. Use the correct accessToken value, -->
+    <!-- as provided by the LogSense app -->
+    <appender name="LOGSENSE" class="com.logsense.logback.Appender" >
+        <remoteHost>logs.logsense.com</remoteHost>
+        <csCustomerToken>CUSTOMER_TOKEN</csCustomerToken>
+    </appender>
+
+   <!-- This is just a standard STDOUT appender - keep it -->
+   <!-- (and feel free to add others) if you intend to use those -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern><![CDATA[%date{HH:mm:ss.SSS} [%thread] %-5level %logger{15}#%line %X{req.requestURI} %msg\n]]></pattern>
+        </encoder>
+    </appender>
+
+    <root>
+        <level value="DEBUG" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSENSE" />
+    </root>
+
+</configuration>
+----
+
+== (Optional) testing sending logs through logback-logsense
+
+We have prepared a simple application which you can use to check if logs are being sent to LogSense.
+
+=== *Step 1:* Clone `logback-logsense` repository
+
+----
+$ git clone https://github.com/collectivesense/logback-logsense
+
+----
+
+=== *Step 2:* Provide the `CUSTOMER_TOKEN` value
+
+----
+$ cd logback-logsense/example
+
+(edit src/main/resources/logback.xml using your favorite editor
+ and replace CUSTOMER_TOKEN with the actual token sent to you)
+----
+
+=== *Step 3:* Run the application
+
+----
+$ mvn compile
+$ mvn exec:java -Dexec.mainClass=com.logsense.App
+
+----
+
+You should be observing in console logs like:
+
+----
+$ mvn exec:java -Dexec.mainClass=com.logsense.App
+[INFO] Scanning for projects...
+[INFO] --- exec-maven-plugin:1.6.0:java (default-cli) @ example ---
+13:33:58.366 [com.logsense.App.main()] INFO  c.l.l.Appender#-2  Using 192.168.1.17 as the source IP address
+SLF4J: A number (1) of logging calls during the initialization phase have been intercepted and are
+SLF4J: now being replayed. These are subject to the filtering rules of the underlying logging system.
+SLF4J: See also http://www.slf4j.org/codes.html#replay
+13:33:58.412 [com.logsense.App.main()] INFO  c.l.Wombat#26  Current temperature: 129 has risen above 60 degrees.
+13:33:58.413 [com.logsense.App.main()] INFO  c.l.Wombat#26  Current temperature: 995 has risen above 60 degrees.
+13:33:59.417 [com.logsense.App.main()] INFO  c.l.Wombat#26  Current temperature: 103 has risen above 60 degrees.
+13:33:59.418 [com.logsense.App.main()] INFO  c.l.Wombat#26  Current temperature: 944 has risen above 60 degrees.
+13:33:59.420 [com.logsense.App.main()] ERROR c.l.Wombat#33  Sanitization failed
+java.lang.RuntimeException: That is really low temperature: -447
+...
+----
+
+If `CUSTOMER_TOKEN` was set correctly, you should be able to see those logs
+after logging in to https://app.logsense.com[app.logsense.com]
+
+
+[#javaee]
+== Java EE Web Apps
+
+Follow the steps outlined in <<#java,JVM integration instructions>>
+
+It is important to include the application resources in the WAR package.
+This can be achieved using following `pom.xml` settings:
+
+[source,xml]
+----
+    <dependencies>
+		<dependency>
+			<groupId>com.logsense</groupId>
+			<artifactId>logback-logsense</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		...
+
+	</dependencies>
+
+	...
+
+    <build>
+
+        ...
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/logback.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+----
+
+A full example of Web appliction project is available at
+https://github.com/collectivesense/logback-logsense/tree/master/webapp-example[logback-logsense
+repository]
+

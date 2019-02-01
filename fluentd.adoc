@@ -1,0 +1,51 @@
+== Generic `fluentd` forwarder client setup
+
+It is possible to use a generic fluentd forward protocol. Either acting
+as a relay or as a source of logs. Following properties must be set:
+
+* `remote host:` logs.logsense.com
+* `remote port:` 32714
+* `SSL enabled:` true
+
+Additional fields:
+
+* *(required)* `cs_customer_token` -> the actual `CUSTOMER_TOKEN` value
+* _(optional)_ `cs_pattern_key` -> name of the field that will be a
+subject of automated pattern discovery
+* _(optional)_ `cs_src_ip` -> IP address that should be assigned to the
+logs
+
+For example,
+
+----
+<source>
+    @type tail
+    tag foo.*
+    path /path/to/file
+</source>
+
+<filter {foo}.**>
+  @type record_transformer
+  <record>
+    # Please fill the actual token!
+    cs_customer_token CUSTOMER_TOKEN
+    cs_source_name "foo"
+
+    # Uncomment and enter IP you want the logs to be
+    # associated with as the source
+    # cs_src_ip "YOUR_IP"
+  </record>
+</filter>
+
+<match foo.**>
+  @type forward
+
+  transport tls
+  <server>
+    host logs.logsense.com
+    port 32714
+  </server>
+
+  flush_interval 10s
+</match>
+----

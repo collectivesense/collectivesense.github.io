@@ -1,0 +1,21 @@
+== Simple `syslog` test via netcat
+
+The simplest way to check if logs are being sent is using `nc` (netcat)
+utility that usually comes preinstalled on Linux or macOS systems.
+
+To send a log you can type following command (replacing `IP` with any IP
+address and `CUSTOMER_TOKEN` with the value that was provided to you in
+the confirmation email):
+
+....
+$ echo "[IP][CUSTOMER_TOKEN] Hello LogSense" | nc -w 5 logs.logsense.com 32514
+....
+
+for instance:
+
+....
+$ echo "[10.1.2.3][aaabbbccc-0011-2233-4455-66778899ddee] Hello LogSense" | nc -w 5 logs.logsense.com 32514
+....
+
+That should produce `Hello LogSense` log for the specified IP address
+which should be immediately visible in LogSense.

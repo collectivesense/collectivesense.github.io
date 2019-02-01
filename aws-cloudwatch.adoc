@@ -1,0 +1,60 @@
+== AWS CloudWatch Logs
+
+Amazon CloudWatch Logs service is frequently used to monitor, store and access
+log files from multiple sources, including EC2, Route 53, AWS Lambda ana
+many others. The simplest way to integrate it is to create an AWS Lambda
+function that pushes logs incoming to CloudWatch Logs to LogSense too.
+
+=== *Step 1:* Create the role that has CloudWatch Logs access
+
+* Using AWS Console, go to `IAM` dashboard. Click `Roles` and then
+`Create role`.
+* Select `AWS Service` `Lambda` as the service that will use the role
+* From eht list of permissions policies search for
+`CloudWatchReadOnlyAcces` and attach it
+* Skip the tags section
+* Assign a meaningful name, e.g. `LogSenseCloudWatchAccessRole`
+
+=== *Step 2:* Create AWS Lambda function placeholder
+
+* Download the zip file containing
+https://github.com/collectivesense/logsense-lambda/releases/download/1.0.0/logsense-lambda-1.0.0.zip[integration
+function]
+* Using AWS Console, go to `Compute/Lambda` dashboard. Click on
+`Create function`
+* Provide a meaningful name, e.g. `LogSenseCloudwatchFunction`
+* Keep `Node.js 8.10` as the runtime and `Choose an existing role` as
+the role
+* Select the role created in the previous step
+(`LogSenseCloudWatchAccessRole`) as the `Existing role`
+* Click on `Create function`
+
+=== *Step 3:* Attach the function code
+
+After the previous step, a function editing dashboard shows up
+
+* From `Code entry type` dropdown in `Function code` section select
+`Upload a .zip file` and upload the previously downloaded zip
+
+=== *Step 4:* Configure environment variable
+
+Again, staying on the function editing dashboard, navigate to
+`Environment variables`
+
+* Enter `CUSTOMER_TOKEN` as the `Key` and the _actual token_ as the
+`value`
+
+=== *Step 5:* Assign the trigger
+
+* Navigate to `Designer` section, from the list of triggers click on
+`CloudWatch Logs`. This should put it on the list triggers in the
+central section of the screen just on the right hand side.
+* Select the `Log group` that you want to push to LogSense. You can also
+add some optional filter patterns.
+* Click on `Add`
+
+Note: You can add several triggers for different Log groups here
+
+* Click on `Save` in the top-right corner of the screen to assign all of
+those changes
+

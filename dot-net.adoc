@@ -1,0 +1,42 @@
+:source-highlighter: highlight.js
+
+== .NET using a `Serilog` LogSense-dedicated plugin
+
+=== *Step 1:* Download the plugin and add it as a dependency
+
+Download
+https://github.com/collectivesense/Serilog.Sinks.LogSense.Core[Serilog.Sinks.LogSense.Core]
+from the GitHub repository and include it as a dpendency in your project
+
+=== *Step 2:* Instantiate the logger instance
+
+[source,csharp]
+----
+var log = new LoggerConfiguration()
+    .WriteTo.Fluentd(new FluentdHandlerSettings
+    {
+        Tag = "Some.App.Name",
+        customer_token = "YOUR CUSTOMER TOKEN"
+    })
+    .CreateLogger();
+----
+
+=== *Step 3:* Use the logger
+
+E.g.
+
+[source,csharp]
+----
+var info = new LogMessage
+{
+    Message = "Some event I am testing",
+    CustomKey = "Any sort of custom value",
+    CustomList = new[] { 1, 2, 3 },
+};
+
+log.Information("{@info}", info)
+----
+
+A complete example is available in the
+https://github.com/collectivesense/Serilog.Sinks.LogSense.Core/tree/master/sample[sample]
+folder of the plugin repository.

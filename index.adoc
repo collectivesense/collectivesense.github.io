@@ -26,8 +26,7 @@ structured logs and better troubleshooting capabilities.
 
 
 === Cloud Services
-* <<aws-cloudwatch.adoc, Collecting logs from EC2 instances,
-CloudTrail, Route 53, AWS Lambda and others>>
+* <<aws-cloudwatch.adoc#, Collecting logs from EC2 instances, CloudTrail, Route 53, AWS Lambda and others>>
 
 === Operating Systems and services
 * <<windows.adoc#,Windows Event Logs (including both operating system and services, such as

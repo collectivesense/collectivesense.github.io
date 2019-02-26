@@ -1,6 +1,6 @@
 :source-highlighter: highlight.js
 
-== NodeJS using `fluent-logger`
+= NodeJS using `fluent-logger`
 
 === *Step 1:* Add `fluent-logger` dependency
 

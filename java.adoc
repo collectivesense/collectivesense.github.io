@@ -1,7 +1,7 @@
 :source-highlighter: highlight.js
 
 [#java]
-== Logback-logsense for Java and anything JVM-based
+= Logback-logsense for Java and anything JVM-based
 
 === *Step 1:* Add logback-logsense dependency
 

@@ -1,6 +1,6 @@
 :source-highlighter: highlight.js
 
-== .NET using a `Serilog` LogSense-dedicated plugin
+= .NET using a `Serilog` LogSense-dedicated plugin
 
 === *Step 1:* Download the plugin and add it as a dependency
 

@@ -1,6 +1,6 @@
 :source-highlighter: highlight.js
 
-== Windows Event Logs using td-agent
+= Windows Event Logs using td-agent
 
 The suggested solution for sending Windows Event Logs is to use
 `td-agent` - a stable distribution of `fluentd` prepared by Treasure

@@ -1,4 +1,4 @@
-== AWS CloudWatch Logs
+= AWS CloudWatch Logs
 
 Amazon CloudWatch Logs service is frequently used to monitor, store and access
 log files from multiple sources, including EC2, Route 53, AWS Lambda ana

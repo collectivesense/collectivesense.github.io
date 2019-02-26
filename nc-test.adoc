@@ -1,4 +1,4 @@
-== Simple `syslog` test via netcat
+= Simple `syslog` test via netcat
 
 The simplest way to check if logs are being sent is using `nc` (netcat)
 utility that usually comes preinstalled on Linux or macOS systems.

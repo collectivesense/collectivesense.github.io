@@ -432,15 +432,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
+<h1>Linux logging setup with <code>syslog-ng</code></h1>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_linux_logging_setup_with_syslog_ng">Linux logging setup with <code>syslog-ng</code></h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>Any syslog compatible source can be used, as long as it supports specifying
 a message template that will include source <code>IP</code> and <code>CUSTOMER_TOKEN</code>
 within square brackets. I.e. <code>[IP][CUSTOMER_TOKEN] msg&#8230;&#8203;</code>.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_syslog_ng">syslog-ng</h3>
@@ -524,11 +526,9 @@ syslog acting now as a relay. For instance:</p>
 </div>
 </div>
 </div>
-</div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-02-01 16:18:15 +0100
+Last updated 2019-02-26 01:10:09 +0100
 </div>
 </div>
 </body>

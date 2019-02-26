@@ -1,4 +1,4 @@
-== Linux logging setup with `syslog-ng`
+= Linux logging setup with `syslog-ng`
 
 Any syslog compatible source can be used, as long as it supports specifying
 a message template that will include source `IP` and `CUSTOMER_TOKEN`

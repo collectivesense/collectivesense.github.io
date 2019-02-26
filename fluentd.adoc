@@ -1,4 +1,4 @@
-== Generic `fluentd` forwarder client setup
+= Generic `fluentd` forwarder client setup
 
 It is possible to use a generic fluentd forward protocol. Either acting
 as a relay or as a source of logs. Following properties must be set:

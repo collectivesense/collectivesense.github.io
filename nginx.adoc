@@ -1,6 +1,6 @@
 :source-highlighter: highlight.js
 
-== Pushing nginx logs using a fluentd relay
+= Pushing nginx logs using a fluentd relay
 
 The preferred method to send Apache/Nginx logs is to use `fluentd` in
 case of Linux or `td-agent` in case of Windows or Mac OS X (the latter

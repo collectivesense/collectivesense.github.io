@@ -16,10 +16,12 @@ var log = new LoggerConfiguration()
     .WriteTo.Fluentd(new FluentdHandlerSettings
     {
         Tag = "Some.App.Name",
-        customer_token = "YOUR CUSTOMER TOKEN"
+        customer_token = "CUSTOMER TOKEN"
     })
     .CreateLogger();
 ----
+
+ `CUSTOMER_TOKEN` needs to be replaced with the value available in *Customer Tokens* section of the user portal.
 
 === *Step 3:* Use the logger
 

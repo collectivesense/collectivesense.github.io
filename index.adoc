@@ -3,7 +3,7 @@
 LogSense supports wide array of log sources through two popular
 protocols: *syslog* and *fluentd*. Either a generic library or a
 dedicated solution can be used with the only requirement being providing
-`CUSTOMER_TOKEN` (sent in the registration confirmation e-mail) which
+`CUSTOMER_TOKEN` (available in *Customer Tokens* section of the user portal) which
 allows to identify and authorize the data stream.
 
 In case of choice between using `fluentd` and `syslog` protocols - it is

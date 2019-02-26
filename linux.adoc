@@ -12,7 +12,7 @@ You can replace it with a specific value (as long as it is a valid IP
 address) if the original address is being lost during forwarding the
 messages.
 
-NOTE: `CUSTOMER_TOKEN` must be replaced with the token provided to you.
+NOTE: `CUSTOMER_TOKEN` must be replaced with the value available in *Customer Tokens* section of the user portal.
 
 ....
 @version: 3.13

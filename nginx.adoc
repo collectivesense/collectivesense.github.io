@@ -21,8 +21,8 @@ output of the log records.
 The config typically resides in `/etc/fluentd` (Linux), `/etc/td-agent`
 (macOS) or `C:\opt\td-agent\etc\td-agent\td-agent.conf` (Windows)
 
-Please replace `CUSTOMER_TOKEN` with the token provided to you in the
-email. The `YOUR_IP` value should be replaced with the IP you want the
+Please replace `CUSTOMER_TOKEN` with the value available in *Customer Tokens*
+section of the user portal. The `YOUR_IP` value should be replaced with the IP you want the
 logs be visible as the source.
 
 Also, please put the actual location of the log files.

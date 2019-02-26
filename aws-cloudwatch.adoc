@@ -41,8 +41,8 @@ After the previous step, a function editing dashboard shows up
 Again, staying on the function editing dashboard, navigate to
 `Environment variables`
 
-* Enter `CUSTOMER_TOKEN` as the `Key` and the _actual token_ as the
-`value`
+* Enter `CUSTOMER_TOKEN` as the `Key` and the _actual token_ (available in *Customer Tokens* section of the user portal)
+ as the `value`
 
 === *Step 5:* Assign the trigger
 

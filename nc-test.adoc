@@ -4,8 +4,7 @@ The simplest way to check if logs are being sent is using `nc` (netcat)
 utility that usually comes preinstalled on Linux or macOS systems.
 
 To send a log you can type following command (replacing `IP` with any IP
-address and `CUSTOMER_TOKEN` with the value that was provided to you in
-the confirmation email):
+address and `CUSTOMER_TOKEN` with the value available in *Customer Tokens* section of the user portal):
 
 ....
 $ echo "[IP][CUSTOMER_TOKEN] Hello LogSense" | nc -w 5 logs.logsense.com 32514

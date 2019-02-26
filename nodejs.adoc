@@ -51,6 +51,8 @@ function emitLog(message, data={}, callback) {
 
 ----
 
+Please replace `CUSTOMER_TOKEN` with the value available in *Customer Tokens* section of the user portal.
+
 === *Step 3:* Use the function
 
 The function can be used directly, e.g.

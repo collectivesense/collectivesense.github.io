@@ -75,7 +75,7 @@ public class Example {
 === *Step 3:* setup `logback.xml` to configure output
 
 Create `src/resources/logback.xml` file with following contents
-(filling-in `CUSTOMER_TOKEN` with the proper value):
+(filling-in `CUSTOMER_TOKEN` with the proper value, available in *Customer Tokens* section of the user portal):
 
 [source,xml]
 ----
@@ -124,7 +124,7 @@ $ git clone https://github.com/collectivesense/logback-logsense
 $ cd logback-logsense/example
 
 (edit src/main/resources/logback.xml using your favorite editor
- and replace CUSTOMER_TOKEN with the actual token sent to you)
+ and replace CUSTOMER_TOKEN with the value available in *Customer Tokens* section of the user portal.)
 ----
 
 === *Step 3:* Run the application

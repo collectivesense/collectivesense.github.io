@@ -9,7 +9,7 @@ as a relay or as a source of logs. Following properties must be set:
 
 Additional fields:
 
-* *(required)* `cs_customer_token` -> the actual `CUSTOMER_TOKEN` value
+* *(required)* `cs_customer_token` -> the actual `CUSTOMER_TOKEN` value (available in *Customer Tokens* section of the user portal)
 * _(optional)_ `cs_pattern_key` -> name of the field that will be a
 subject of automated pattern discovery
 * _(optional)_ `cs_src_ip` -> IP address that should be assigned to the

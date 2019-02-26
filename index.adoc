@@ -38,17 +38,3 @@ e.g. MS SQL)>>
 
 === Other
 * Do you have an use case not covered by the instructions? mailto:testing@logsense.com[Contact us!]
-
-== Using the application
-
-There are several videos prepared that guide through various parts of
-the application:
-
-* https://www.youtube.com/watch?v=5njTa343aoY[Syslog and fluentd
-integration]
-* https://www.youtube.com/watch?v=eLDzOyUNxOY[Viewing and filtering log
-records]
-* https://www.youtube.com/watch?v=m9wMn7TfSwc[Editing log patterns]
-* https://www.youtube.com/watch?v=VacXUWSOISk[Using custom charts and
-dashboards]
-* https://www.youtube.com/watch?v=dMB_YUWcMH0[Working with anomalies]

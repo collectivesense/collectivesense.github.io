@@ -1,110 +1,91 @@
 :source-highlighter: highlight.js
 
-= Windows Event Logs using td-agent
+= Sending Windows Event Logs using NXLog Community Edition
 
-The suggested solution for sending Windows Event Logs is to use
-`td-agent` - a stable distribution of `fluentd` prepared by Treasure
-Data. The installation process is described in detail here:
-https://docs.fluentd.org/v1.0/articles/install-by-msi[Install by MSI]
-
-NOTE: `td-agent v3.1` or newer is required.
-
-We are going to use
-https://docs.fluentd.org/v1.0/articles/in_windows_eventlog[in_windows_eventlog
-plugin] to provide capabilities to read and push Windows Event Logs.
+A recommended solution for sending logs from Windows is to use NXLog Community Edition.
 
 The exact steps are following:
 
-=== *Step 1:* Install td-agent
+=== *Step 1:* Install NXLog
 
-https://td-agent-package-browser.herokuapp.com/3/windows[Download the
-`.msi` file] and install the software.
+Head to https://nxlog.co/products/nxlog-community-edition/download[NXlog Community Edition download page],
+download the MSI package and install it.
 
-=== *Step 2:* Install `windows_eventlog` input plugin
+=== *Step 2:* Prepare the config
 
-Open `Td-agent Command Prompt` (which was installed by td-agent). In
-command prompt, execute following line:
+Open `C:\Program Files (x86)\nxlog\conf\nxlog.conf` and add following entries
+entries (administrator privileges are needed to do so).
 
-....
-fluent-gem install fluent-plugin-windows-eventlog
-....
-
-=== *Step 3:* Prepare the config
-
-Open `C:\opt\td-agent\etc\td-agent\td-agent.conf` and add following
-entries. Please replace `CUSTOMER_TOKEN` with the value available in *Customer Tokens* section of
-the user portal. The `YOUR_IP` value should be replaced with the IP you
-want the logs be visible as the source.
+NOTE: Please replace `CUSTOMER_TOKEN` with the value available in *Customer Tokens* section of
+the user portal.
 
 [source,xml]
 ....
-<source>
-  @type windows_eventlog
-  @id windows_eventlog
-  channels application,system,security
-  tag winevt.raw
-  <storage>
-    @type local
-    persistent false
-  </storage>
-</source>
 
-<filter {winevt.raw}.**>
-  @type record_transformer
-  <record>
-    # Please fill the actual token!
-    cs_customer_token "CUSTOMER_TOKEN"
+<Input msevents>
+    Module         im_msvistalog
+    Query <QueryList> \
+	    <Query Id="0"> \
+	        <Select Path="Application">*</Select> \
+	        <Select Path="System">*</Select> \
+	        <Select Path="Security">*</Select> \
+	   </Query> \
+    </QueryList>
 
-    # Uncomment and enter IP you want the logs to be
-    # associated with as the source
-    # cs_src_ip "YOUR_IP"
+    Exec to_syslog_ietf();
 
-    cs_pattern_key "description"
-    cs_source_name "eventlog"
-  </record>
-</filter>
+    Exec $raw_event = to_json();
+    Exec $raw_event = replace($raw_event, $raw_event, '[][CUSTOMER_TOKEN]' + $raw_event);
+</Input>
 
-<match winevt.raw.**>
-  @type forward
+<Output logsense>
+    Module          om_ssl
+    Host            logs.logsense.com
+    Port            32614
+    AllowUntrusted  TRUE
+</Output>
 
-  # primary host
-  transport tls
-  <server>
-    host logs.logsense.com
-    port 32714
-  </server>
-  flush_interval 10s
-</match>
-....
-
-=== *Step 4:* Test the setup
-
-Open `Command Prompt` as `Administrator`. Navigate to `td-agent` home
-directory and run the agent:
+<Route logsense_msevents>
+    Path msevents => logsense
+</Route>
 
 ....
-> cd C:\opt\td-agent
-> fluentd -c etc\td-agent\td-agent.conf
+
+
+In case you are using non-default setup, make sure that the required modules are also present:
+
+[source,xml]
+....
+<Extension _syslog>
+    Module    xm_syslog
+</Extension>
+
+<Extension _charconv>
+    Module    xm_charconv
+    AutodetectCharsets iso8859-2, utf-8, utf-16, utf-32
+</Extension>
+
+<Extension _exec>
+    Module    xm_exec
+</Extension>
+
+<Extension json>
+    Module    xm_json
+</Extension>
+
 ....
 
-If the application starts without errors, it should start sending
-records to logsense.com, where they should be visible in the logs view
-(you can put into search box `logs.source_name=eventlog` to filter for
-them).
 
-Hit Ctrl-C to stop the application
+=== *Step 3:* Start the service
 
-=== *Step 5:* Register fluentd as a service and run it
-
-Using the Administrator console, execute following commands:
-
-....
-> fluentd --reg-winsvc i
-> fluentd --reg-winsvc-fluentdopt '-c C:\opt\td-agent\etc\td-agent\td-agent.conf -o C:\opt\td-agent\td-agent.log'
-....
-
-Go to
+Open the Services console as (either by going to
 `Control Panel -> System and Security -> Administrative Tools -> Services`.
-Double click on `Fluentd Windows Service` and click Start button.
+or by executing `services.msc` in the Command Prompt) and
+start `nxlog`. The service will also start automatically after the reboot.
 
-'''''
+If it starts without errors, it should start sending
+records to logsense.com, where they should be visible in the logs view
+(you can put into search box `logs.SourceModuleName=msevents` to filter for them).
+
+In case of troubleshooting, nxlog logs are available at `C:\Program Files
+(x86)\nxlog\data\nxlog.log`

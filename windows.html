@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Windows Event Logs using td-agent</title>
+<title>Sending Windows Event Logs using NXLog Community Edition</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -432,16 +432,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Windows Event Logs using td-agent</h1>
+<h1>Sending Windows Event Logs using NXLog Community Edition</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The suggested solution for sending Windows Event Logs is to use
-<code>td-agent</code> - a stable distribution of <code>fluentd</code> prepared by Treasure
-Data. The installation process is described in detail here:
-<a href="https://docs.fluentd.org/v1.0/articles/install-by-msi">Install by MSI</a></p>
+<p>A recommended solution for sending logs from Windows is to use NXLog Community Edition.</p>
+</div>
+<div class="paragraph">
+<p>The exact steps are following:</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_step_1_install_nxlog"><strong>Step 1:</strong> Install NXLog</h3>
+<div class="paragraph">
+<p>Head to <a href="https://nxlog.co/products/nxlog-community-edition/download">NXlog Community Edition download page</a>,
+download the MSI package and install it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_step_2_prepare_the_config"><strong>Step 2:</strong> Prepare the config</h3>
+<div class="paragraph">
+<p>Open <code>C:\Program Files (x86)\nxlog\conf\nxlog.conf</code> and add following entries
+entries (administrator privileges are needed to do so).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -450,134 +465,88 @@ Data. The installation process is described in detail here:
 <div class="title">Note</div>
 </td>
 <td class="content">
-<code>td-agent v3.1</code> or newer is required.
+Please replace <code>CUSTOMER_TOKEN</code> with the value available in <strong>Customer Tokens</strong> section of
+the user portal.
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>We are going to use
-<a href="https://docs.fluentd.org/v1.0/articles/in_windows_eventlog">in_windows_eventlog
-plugin</a> to provide capabilities to read and push Windows Event Logs.</p>
-</div>
-<div class="paragraph">
-<p>The exact steps are following:</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_step_1_install_td_agent"><strong>Step 1:</strong> Install td-agent</h3>
-<div class="paragraph">
-<p><a href="https://td-agent-package-browser.herokuapp.com/3/windows">Download the
-<code>.msi</code> file</a> and install the software.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_step_2_install_windows_eventlog_input_plugin"><strong>Step 2:</strong> Install <code>windows_eventlog</code> input plugin</h3>
-<div class="paragraph">
-<p>Open <code>Td-agent Command Prompt</code> (which was installed by td-agent). In
-command prompt, execute following line:</p>
-</div>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>fluent-gem install fluent-plugin-windows-eventlog</pre>
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Input msevents&gt;
+    Module         im_msvistalog
+    Query &lt;QueryList&gt; \
+	    &lt;Query Id="0"&gt; \
+	        &lt;Select Path="Application"&gt;*&lt;/Select&gt; \
+	        &lt;Select Path="System"&gt;*&lt;/Select&gt; \
+	        &lt;Select Path="Security"&gt;*&lt;/Select&gt; \
+	   &lt;/Query&gt; \
+    &lt;/QueryList&gt;
+
+    Exec to_syslog_ietf();
+
+    Exec $raw_event = to_json();
+    Exec $raw_event = replace($raw_event, $raw_event, '[][CUSTOMER_TOKEN]' + $raw_event);
+&lt;/Input&gt;
+
+&lt;Output logsense&gt;
+    Module          om_ssl
+    Host            logs.logsense.com
+    Port            32614
+    AllowUntrusted  TRUE
+&lt;/Output&gt;
+
+&lt;Route logsense_msevents&gt;
+    Path msevents =&gt; logsense
+&lt;/Route&gt;</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_step_3_prepare_the_config"><strong>Step 3:</strong> Prepare the config</h3>
 <div class="paragraph">
-<p>Open <code>C:\opt\td-agent\etc\td-agent\td-agent.conf</code> and add following
-entries. Please replace <code>CUSTOMER_TOKEN</code> with the value available in <strong>Customer Tokens</strong> section of
-the user portal. The <code>YOUR_IP</code> value should be replaced with the IP you
-want the logs be visible as the source.</p>
+<p>In case you are using non-default setup, make sure that the required modules are also present:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;source&gt;
-  @type windows_eventlog
-  @id windows_eventlog
-  channels application,system,security
-  tag winevt.raw
-  &lt;storage&gt;
-    @type local
-    persistent false
-  &lt;/storage&gt;
-&lt;/source&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;Extension _syslog&gt;
+    Module    xm_syslog
+&lt;/Extension&gt;
 
-&lt;filter {winevt.raw}.**&gt;
-  @type record_transformer
-  &lt;record&gt;
-    # Please fill the actual token!
-    cs_customer_token "CUSTOMER_TOKEN"
+&lt;Extension _charconv&gt;
+    Module    xm_charconv
+    AutodetectCharsets iso8859-2, utf-8, utf-16, utf-32
+&lt;/Extension&gt;
 
-    # Uncomment and enter IP you want the logs to be
-    # associated with as the source
-    # cs_src_ip "YOUR_IP"
+&lt;Extension _exec&gt;
+    Module    xm_exec
+&lt;/Extension&gt;
 
-    cs_pattern_key "description"
-    cs_source_name "eventlog"
-  &lt;/record&gt;
-&lt;/filter&gt;
-
-&lt;match winevt.raw.**&gt;
-  @type forward
-
-  # primary host
-  transport tls
-  &lt;server&gt;
-    host logs.logsense.com
-    port 32714
-  &lt;/server&gt;
-  flush_interval 10s
-&lt;/match&gt;</code></pre>
+&lt;Extension json&gt;
+    Module    xm_json
+&lt;/Extension&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_step_4_test_the_setup"><strong>Step 4:</strong> Test the setup</h3>
+<h3 id="_step_3_start_the_service"><strong>Step 3:</strong> Start the service</h3>
 <div class="paragraph">
-<p>Open <code>Command Prompt</code> as <code>Administrator</code>. Navigate to <code>td-agent</code> home
-directory and run the agent:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>&gt; cd C:\opt\td-agent
-&gt; fluentd -c etc\td-agent\td-agent.conf</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If the application starts without errors, it should start sending
-records to logsense.com, where they should be visible in the logs view
-(you can put into search box <code>logs.source_name=eventlog</code> to filter for
-them).</p>
-</div>
-<div class="paragraph">
-<p>Hit Ctrl-C to stop the application</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_step_5_register_fluentd_as_a_service_and_run_it"><strong>Step 5:</strong> Register fluentd as a service and run it</h3>
-<div class="paragraph">
-<p>Using the Administrator console, execute following commands:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>&gt; fluentd --reg-winsvc i
-&gt; fluentd --reg-winsvc-fluentdopt '-c C:\opt\td-agent\etc\td-agent\td-agent.conf -o C:\opt\td-agent\td-agent.log'</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Go to
+<p>Open the Services console as (either by going to
 <code>Control Panel &#8594; System and Security &#8594; Administrative Tools &#8594; Services</code>.
-Double click on <code>Fluentd Windows Service</code> and click Start button.</p>
+or by executing <code>services.msc</code> in the Command Prompt) and
+start <code>nxlog</code>. The service will also start automatically after the reboot.</p>
 </div>
-<hr>
+<div class="paragraph">
+<p>If it starts without errors, it should start sending
+records to logsense.com, where they should be visible in the logs view
+(you can put into search box <code>logs.SourceModuleName=msevents</code> to filter for them).</p>
+</div>
+<div class="paragraph">
+<p>In case of troubleshooting, nxlog logs are available at <code>C:\Program Files
+(x86)\nxlog\data\nxlog.log</code></p>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-02-26 15:06:53 +0100
+Last updated 2019-02-28 00:00:25 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

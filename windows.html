@@ -448,15 +448,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_step_1_install_nxlog"><strong>Step 1:</strong> Install NXLog</h3>
 <div class="paragraph">
-<p>Head to <a href="https://nxlog.co/products/nxlog-community-edition/download">NXlog Community Edition download page</a>,
+<p>Head to <a href="https://nxlog.co/products/nxlog-community-edition/download" target="_blank" rel="noopener">NXlog Community Edition download page</a>,
 download the MSI package and install it.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_step_2_prepare_the_config"><strong>Step 2:</strong> Prepare the config</h3>
 <div class="paragraph">
-<p>Open <code>C:\Program Files (x86)\nxlog\conf\nxlog.conf</code> and add following entries
-entries (administrator privileges are needed to do so).</p>
+<p>Open the config file which by default is installed in <code>C:\Program Files (x86)\nxlog\conf\nxlog.conf</code> and add following entries (administrator privileges are needed to do so).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -502,7 +501,7 @@ the user portal.
 </div>
 </div>
 <div class="paragraph">
-<p>In case you are using non-default setup, make sure that the required modules are also present:</p>
+<p>In case you are using non-standard environment, make sure that the required modules are also present:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -531,7 +530,7 @@ the user portal.
 <p>Open the Services console as (either by going to
 <code>Control Panel &#8594; System and Security &#8594; Administrative Tools &#8594; Services</code>.
 or by executing <code>services.msc</code> in the Command Prompt) and
-start <code>nxlog</code>. The service will also start automatically after the reboot.</p>
+start <code>nxlog</code> service. If you&#8217;d like the service to start automatically after the reboot you can change the Startup Type to <code>Automatic</code>.</p>
 </div>
 <div class="paragraph">
 <p>If it starts without errors, it should start sending
@@ -540,13 +539,13 @@ records to logsense.com, where they should be visible in the logs view
 </div>
 <div class="paragraph">
 <p>In case of troubleshooting, nxlog logs are available at <code>C:\Program Files
-(x86)\nxlog\data\nxlog.log</code></p>
+(x86)\nxlog\data\nxlog.log</code>, assuming you have used the default installation folder.</p>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-02-28 00:00:25 +0100
+Last updated 2019-02-28 14:44:10 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

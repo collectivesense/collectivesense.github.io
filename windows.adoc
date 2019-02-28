@@ -8,13 +8,12 @@ The exact steps are following:
 
 === *Step 1:* Install NXLog
 
-Head to https://nxlog.co/products/nxlog-community-edition/download[NXlog Community Edition download page],
+Head to https://nxlog.co/products/nxlog-community-edition/download[NXlog Community Edition download page^],
 download the MSI package and install it.
 
 === *Step 2:* Prepare the config
 
-Open `C:\Program Files (x86)\nxlog\conf\nxlog.conf` and add following entries
-entries (administrator privileges are needed to do so).
+Open the config file which by default is installed in `C:\Program Files (x86)\nxlog\conf\nxlog.conf` and add following entries (administrator privileges are needed to do so).
 
 NOTE: Please replace `CUSTOMER_TOKEN` with the value available in *Customer Tokens* section of
 the user portal.
@@ -52,7 +51,7 @@ the user portal.
 ....
 
 
-In case you are using non-default setup, make sure that the required modules are also present:
+In case you are using non-standard environment, make sure that the required modules are also present:
 
 [source,xml]
 ....
@@ -81,11 +80,11 @@ In case you are using non-default setup, make sure that the required modules are
 Open the Services console as (either by going to
 `Control Panel -> System and Security -> Administrative Tools -> Services`.
 or by executing `services.msc` in the Command Prompt) and
-start `nxlog`. The service will also start automatically after the reboot.
+start `nxlog` service. If you'd like the service to start automatically after the reboot you can change the Startup Type to `Automatic`.
 
 If it starts without errors, it should start sending
 records to logsense.com, where they should be visible in the logs view
 (you can put into search box `logs.SourceModuleName=msevents` to filter for them).
 
 In case of troubleshooting, nxlog logs are available at `C:\Program Files
-(x86)\nxlog\data\nxlog.log`
+(x86)\nxlog\data\nxlog.log`, assuming you have used the default installation folder.

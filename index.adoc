@@ -34,6 +34,7 @@ e.g. MS SQL)>>
 * <<linux.adoc#,Linux logs using `syslog-ng`>>
 * <<apache.adoc#, Apache HTTP Server logs using `fluentd`>>
 * <<nginx.adoc#, nginx logs using `fluentd`>>
+* <<kubernetes.adoc#, Kubernetes cluster logs using `fluentd`>>
 
 
 === Other

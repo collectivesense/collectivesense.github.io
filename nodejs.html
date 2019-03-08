@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>NodeJS using fluent-logger</title>
+<title>Node.js</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -432,57 +432,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>NodeJS using <code>fluent-logger</code></h1>
+<h1>Node.js</h1>
 </div>
 <div id="content">
 <div class="sect2">
-<h3 id="_step_1_add_fluent_logger_dependency"><strong>Step 1:</strong> Add <code>fluent-logger</code> dependency</h3>
-<div class="paragraph">
-<p>Include fluent-logger in your <code>package.json</code>, e.g.:</p>
-</div>
+<h3 id="_step_1_install_logsense_dependency"><strong>Step 1:</strong> Install <code>logsense</code> dependency</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">"devDependencies": {
-  ...
-  "fluent-logger": "^3.2.2"
-  ...
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">npm i logsense</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_step_2_create_logger_instance_and_a_function_for_wrapping_logs"><strong>Step 2:</strong> Create logger instance and a function for wrapping logs</h3>
+<h3 id="_step_2_initialize_logsense_in_your_main_file"><strong>Step 2:</strong> Initialize logsense in your main file</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">const customerToken = "YOUR CUSTOMER TOKEN"
-const tag = 'nodejs'
-
-const FluentLogger = require('fluent-logger')
-const fluent = FluentLogger.createFluentSender(tag, {
-      host: 'logs.logsense.com',
-      port: 32714,
-      timeout: 0.0,
-      reconnectInterval: 100,
-      requireAckResponse: true,
-      enableReconnect: false,
-      tls: true
-    })
-
-function emitLog(message, data={}, callback) {
-  const fluentMessage = {
-    // This is required key, used to identify and authorize client
-    cs_customer_token: customerToken,
-    // This one makes `message` key a subject to pattern discovery
-    cs_pattern_key: 'message',
-    // This puts the message as `message`
-    message: message,
-    ...data
-  }
-
-  fluent.emit(tag,
-    fluentMessage,
-    callback)
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">const logsense = require('logsense')('CUSTOMER_TOKEN')</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -490,28 +455,35 @@ function emitLog(message, data={}, callback) {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_step_3_use_the_function"><strong>Step 3:</strong> Use the function</h3>
+<h3 id="_step_3_capture_logs"><strong>Step 3:</strong> Capture logs</h3>
 <div class="paragraph">
-<p>The function can be used directly, e.g.</p>
+<p>Capture all console statements by adding:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">emitLog("Test message", {key: 'value'})</code></pre>
+<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">logsense.install()</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>It can be also integrated with other libraries such as
-<a href="https://github.com/fluent/fluent-logger-node#logging-library-support">winston</a>
-or <a href="https://www.npmjs.com/package/log4js-fluent-appender">log4js</a>. There
-are examples on how this could be accomplished at
-<a href="https://github.com/fluent/fluent-logger-node#logging-library-support">fluent-logger-node</a>
-page.</p>
+<p>or, for Winston:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">logger.add(new logsense.WinstonTransport())</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_step_4_start_logging"><strong>Step 4:</strong> Start logging</h3>
+<div class="paragraph">
+<p>By adding <code>logsense.install()</code> in your main file, all <code>console</code> statements will be sent to LogSense.
+If you want to send structured logs, pass an object as the last <code>console</code> statement argument.</p>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-02-26 15:06:33 +0100
+Last updated 2019-03-08 10:45:09 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

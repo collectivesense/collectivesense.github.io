@@ -1,3 +1,5 @@
+:source-highlighter: highlight.js
+
 = Generic `fluentd` forwarder client setup
 
 It is possible to use a generic fluentd forward protocol. Either acting
@@ -17,6 +19,7 @@ logs
 
 For example,
 
+[source,xml]
 ----
 <source>
     @type tail
@@ -49,3 +52,5 @@ For example,
   flush_interval 10s
 </match>
 ----
+
+If you use Docker you can use the <<fluentd-container.adoc#, Docker `fluentd` forwarder>> image.

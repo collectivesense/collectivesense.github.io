@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Generic fluentd forwarder client setup</title>
+<title>Pushing logs from the Docker containers</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -432,88 +432,42 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Generic <code>fluentd</code> forwarder client setup</h1>
+<h1>Pushing logs from the Docker containers</h1>
 </div>
 <div id="content">
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>It is possible to use a generic fluentd forward protocol. Either acting
-as a relay or as a source of logs. Following properties must be set:</p>
+<p>To send logs from the Docker containers one can use <code>fluentd</code> forwarder.
+This way we can set the token once for all the applications which logs we
+want to see in the LogSense dashboard.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>remote host:</code> logs.logsense.com</p>
-</li>
-<li>
-<p><code>remote port:</code> 32714</p>
-</li>
-<li>
-<p><code>SSL enabled:</code> true</p>
-</li>
-</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_how_does_it_work">How does it work</h3>
+<div class="paragraph">
+<p>The Docker containers send logs using docker logs driver into fluentd forwarder which takes care of the logs distribution.</p>
 </div>
 <div class="paragraph">
-<p>Additional fields:</p>
+<p>Please consult the <a href="fluentd-container.html">Docker <code>fluentd</code> forwarder</a> on how to set up the forwarder.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>(required)</strong> <code>cs_customer_token</code> &#8594; the actual <code>CUSTOMER_TOKEN</code> value (available in <strong>Customer Tokens</strong> section of the user portal)</p>
-</li>
-<li>
-<p><em>(optional)</em> <code>cs_pattern_key</code> &#8594; name of the field that will be a
-subject of automated pattern discovery</p>
-</li>
-<li>
-<p><em>(optional)</em> <code>cs_src_ip</code> &#8594; IP address that should be assigned to the
-logs</p>
-</li>
-</ul>
 </div>
+<div class="sect2">
+<h3 id="_how_to_push_docker_containers_logs_into_the_logsense_forwarder">How to push Docker containers logs into the Logsense forwarder</h3>
 <div class="paragraph">
-<p>For example,</p>
+<p>To push the container&#8217;s logs into the forwarder the Docker logging driver needs to be configured. We can do it by providing the <code>--log-driver</code> and <code>--log-opt</code> flags.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;source&gt;
-    @type tail
-    tag foo.*
-    path /path/to/file
-&lt;/source&gt;
-
-&lt;filter {foo}.**&gt;
-  @type record_transformer
-  &lt;record&gt;
-    # Please fill the actual token!
-    cs_customer_token CUSTOMER_TOKEN
-    cs_source_name "foo"
-
-    # Uncomment and enter IP you want the logs to be
-    # associated with as the source
-    # cs_src_ip "YOUR_IP"
-  &lt;/record&gt;
-&lt;/filter&gt;
-
-&lt;match foo.**&gt;
-  @type forward
-
-  transport tls
-  &lt;server&gt;
-    host logs.logsense.com
-    port 32714
-  &lt;/server&gt;
-
-  flush_interval 10s
-&lt;/match&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ docker run --log-driver=fluentd --log-opt fluentd-address=127.0.0.1:24224 nginx</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>If you use Docker you can use the <a href="fluentd-container.html">Docker <code>fluentd</code> forwarder</a> image.</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-13 13:27:04 UTC
+Last updated 2019-03-13 13:33:54 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

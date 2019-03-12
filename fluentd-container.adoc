@@ -1,0 +1,36 @@
+:source-highlighter: highlight.js
+
+= Docker `fluentd` forwarder image
+
+The following https://hub.docker.com/r/collectivesense/logsense-forwarder[Logsense forwarder image] can be used to set up your `fluentd` forwarder as Docker container.
+
+The source code can be found in our https://github.com/collectivesense/logsense-fluentd-forwarder[GitHub repository]
+
+It can be run as follow:
+
+[source,bash]
+----
+$ docker run \
+  --env LOGSENSE_TOKEN="your logsense token" \
+  -p 127.0.0.1:24224:24224 \
+  collectivesense/logsense-forwarder
+----
+
+Please remember to replace the `"your logsense token"` string with your token.
+
+It can also be run using Docker Compose with the following yaml file:
+
+[source,yaml]
+----
+version: "3"
+
+services:
+  logsense-forwarder:
+    image: collectivesense/logsense-forwarder
+    environment:
+      - LOGSENSE_TOKEN="your logsense token"
+    ports:
+      - "127.0.0.1:24224:24224"
+----
+
+Adding `-p 127.0.0.1:24224:24224` will make Docker to listen on the local interface only.

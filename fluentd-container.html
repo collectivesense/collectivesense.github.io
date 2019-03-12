@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Generic fluentd forwarder client setup</title>
+<title>Docker fluentd forwarder image</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -432,88 +432,52 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Generic <code>fluentd</code> forwarder client setup</h1>
+<h1>Docker <code>fluentd</code> forwarder image</h1>
 </div>
 <div id="content">
 <div class="paragraph">
-<p>It is possible to use a generic fluentd forward protocol. Either acting
-as a relay or as a source of logs. Following properties must be set:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>remote host:</code> logs.logsense.com</p>
-</li>
-<li>
-<p><code>remote port:</code> 32714</p>
-</li>
-<li>
-<p><code>SSL enabled:</code> true</p>
-</li>
-</ul>
+<p>The following <a href="https://hub.docker.com/r/collectivesense/logsense-forwarder">Logsense forwarder image</a> can be used to set up your <code>fluentd</code> forwarder as Docker container.</p>
 </div>
 <div class="paragraph">
-<p>Additional fields:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>(required)</strong> <code>cs_customer_token</code> &#8594; the actual <code>CUSTOMER_TOKEN</code> value (available in <strong>Customer Tokens</strong> section of the user portal)</p>
-</li>
-<li>
-<p><em>(optional)</em> <code>cs_pattern_key</code> &#8594; name of the field that will be a
-subject of automated pattern discovery</p>
-</li>
-<li>
-<p><em>(optional)</em> <code>cs_src_ip</code> &#8594; IP address that should be assigned to the
-logs</p>
-</li>
-</ul>
+<p>The source code can be found in our <a href="https://github.com/collectivesense/logsense-fluentd-forwarder">GitHub repository</a></p>
 </div>
 <div class="paragraph">
-<p>For example,</p>
+<p>It can be run as follow:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;source&gt;
-    @type tail
-    tag foo.*
-    path /path/to/file
-&lt;/source&gt;
-
-&lt;filter {foo}.**&gt;
-  @type record_transformer
-  &lt;record&gt;
-    # Please fill the actual token!
-    cs_customer_token CUSTOMER_TOKEN
-    cs_source_name "foo"
-
-    # Uncomment and enter IP you want the logs to be
-    # associated with as the source
-    # cs_src_ip "YOUR_IP"
-  &lt;/record&gt;
-&lt;/filter&gt;
-
-&lt;match foo.**&gt;
-  @type forward
-
-  transport tls
-  &lt;server&gt;
-    host logs.logsense.com
-    port 32714
-  &lt;/server&gt;
-
-  flush_interval 10s
-&lt;/match&gt;</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ docker run \
+  --env LOGSENSE_TOKEN="your logsense token" \
+  -p 127.0.0.1:24224:24224 \
+  collectivesense/logsense-forwarder</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you use Docker you can use the <a href="fluentd-container.html">Docker <code>fluentd</code> forwarder</a> image.</p>
+<p>Please remember to replace the <code>"your logsense token"</code> string with your token.</p>
+</div>
+<div class="paragraph">
+<p>It can also be run using Docker Compose with the following yaml file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">version: "3"
+
+services:
+  logsense-forwarder:
+    image: collectivesense/logsense-forwarder
+    environment:
+      - LOGSENSE_TOKEN="your logsense token"
+    ports:
+      - "127.0.0.1:24224:24224"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Adding <code>-p 127.0.0.1:24224:24224</code> will make Docker to listen on the local interface only.</p>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-13 13:27:04 UTC
+Last updated 2019-03-13 13:25:28 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

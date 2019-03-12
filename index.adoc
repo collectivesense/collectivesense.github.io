@@ -13,7 +13,8 @@ structured logs and better troubleshooting capabilities.
 == Generic setup
 * <<nc-test.adoc#, One-liner test command using `nc`>>
 * <<linux.adoc#, Syslog protocol via `syslog-ng`>>
-* <<fluentd.adoc#, Generic `fluentd`-as-a-relay config>>
+* <<fluentd.adoc#, Generic `fluentd` forwarder config>>
+* <<fluentd-container.adoc#, Docker `fluentd` forwarder>>
 
 == Dedicated configuration
 
@@ -35,6 +36,7 @@ e.g. MS SQL)>>
 * <<apache.adoc#, Apache HTTP Server logs using `fluentd`>>
 * <<nginx.adoc#, nginx logs using `fluentd`>>
 * <<kubernetes.adoc#, Kubernetes cluster logs using `fluentd`>>
+* <<docker.adoc#, Docker containers logs>>
 
 
 === Other

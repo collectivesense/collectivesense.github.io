@@ -1,0 +1,23 @@
+:source-highlighter: highlight.js
+
+= Pushing logs from the Docker containers
+
+To send logs from the Docker containers one can use `fluentd` forwarder.
+This way we can set the token once for all the applications which logs we
+want to see in the LogSense dashboard.
+
+=== How does it work
+
+The Docker containers send logs using docker logs driver into fluentd forwarder which takes care of the logs distribution.
+
+Please consult the <<fluentd-container.adoc#, Docker `fluentd` forwarder>> on how to set up the forwarder.
+
+
+=== How to push Docker containers logs into the Logsense forwarder
+
+To push the container's logs into the forwarder the Docker logging driver needs to be configured. We can do it by providing the `--log-driver` and `--log-opt` flags.
+
+[source,bash]
+----
+$ docker run --log-driver=fluentd --log-opt fluentd-address=127.0.0.1:24224 nginx
+----

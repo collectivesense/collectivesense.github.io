@@ -22,7 +22,7 @@ structured logs and better troubleshooting capabilities.
 
 * <<java.adoc#,Java, Scala, Clojure, Kotlin, any other *JVM*-based technology logs>>
 * <<java.adoc#javaee, Java EE Web Application logs>>
-* <<java-tracing.adoc, Java Tracing and performance monitoring>>
+* <<java-tracing.adoc#, Java Tracing and performance monitoring>>
 * <<nodejs.adoc#, NodeJS>>
 * <<dot-net.adoc#, .NET>>
 * <<python.adoc#, Python>>

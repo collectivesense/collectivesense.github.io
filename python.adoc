@@ -92,7 +92,7 @@ To run it, execute following:
 [source,bash]
 ----
 $ pip install Flask
-$ LOGSENSE_CUSTOMER_TOKEN=<your token> FLASK_APP=index.py flask run
+$ LOGSENSE_TOKEN=<your token> FLASK_APP=index.py flask run
 ----
 
 The example starts a basic HTTP server. Another example script can be use to execute

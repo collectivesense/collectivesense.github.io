@@ -446,7 +446,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
  &lt;groupId&gt;com.logsense&lt;/groupId&gt;
  &lt;artifactId&gt;logback-logsense&lt;/artifactId&gt;
- &lt;version&gt;1.0&lt;/version&gt;
+ &lt;version&gt;1.1.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -514,7 +514,8 @@ public class Example {
 <h3 id="_step_3_setup_logback_xml_to_configure_output"><strong>Step 3:</strong> setup <code>logback.xml</code> to configure output</h3>
 <div class="paragraph">
 <p>Create <code>src/resources/logback.xml</code> file with following contents
-(filling-in <code>CUSTOMER_TOKEN</code> with the proper value, available in <strong>Customer Tokens</strong> section of the user portal):</p>
+(filling-in <code>LOGSENSE_TOKEN</code> with the proper value, available in
+*Start Sending Logs section of <a href="https://user.app.logsense.com/start-sending-logs">user portal</a>):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -526,7 +527,7 @@ public class Example {
     &lt;!-- as provided by the LogSense app --&gt;
     &lt;appender name="LOGSENSE" class="com.logsense.logback.Appender" &gt;
         &lt;remoteHost&gt;logs.logsense.com&lt;/remoteHost&gt;
-        &lt;csCustomerToken&gt;CUSTOMER_TOKEN&lt;/csCustomerToken&gt;
+        &lt;logsenseToken&gt;ENTER_YOUR_TOKEN&lt;/logsenseToken&gt;
     &lt;/appender&gt;
 
    &lt;!-- This is just a standard STDOUT appender - keep it --&gt;
@@ -546,6 +547,56 @@ public class Example {
 &lt;/configuration&gt;</code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_alternative_way_to_provide_logsense_token">Alternative way to provide <code>LOGSENSE_TOKEN</code></h4>
+<div class="paragraph">
+<p>It is also possible to specify the token outside of <code>logback.xml</code> file, using either of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Option 1: As Java property, e.g. by adding <code>-Dlogsense.token=ENTER-TOKEN</code> to JVM options</p>
+</li>
+<li>
+<p>Option 2: As environment variable, by setting <code>LOGSENSE_TOKEN=ENTER-TOKEN</code></p>
+</li>
+<li>
+<p>Option 3: By providing it inside a properties file, which location is provided by Java property:
+<code>-Dlogsense.config=/path/to/logsense.properties</code>. The file needs to include <code>logsense.token=ENTER-TOKEN</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Following are some examples how all of this can be put together</p>
+</div>
+<div class="paragraph">
+<p>Using environment variable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -jar myapp.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using Java property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ java -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using config file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cat logsense.properties
+logsense.token=aaa-111-bbb-222-ccc
+
+$ java -Dlogsense.config=logsense.properties -jar myapp.jar</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="_optional_testing_sending_logs_through_logback_logsense">(Optional) testing sending logs through logback-logsense</h2>
@@ -562,13 +613,14 @@ public class Example {
 </div>
 </div>
 <div class="sect2">
-<h3 id="_step_2_provide_the_customer_token_value"><strong>Step 2:</strong> Provide the <code>CUSTOMER_TOKEN</code> value</h3>
+<h3 id="_step_2_provide_the_logsense_token_value"><strong>Step 2:</strong> Provide the <code>LOGSENSE_TOKEN</code> value</h3>
 <div class="listingblock">
 <div class="content">
 <pre>$ cd logback-logsense/example
 
 (edit src/main/resources/logback.xml using your favorite editor
- and replace CUSTOMER_TOKEN with the value available in *Customer Tokens* section of the user portal.)</pre>
+ and replace LOGSENSE_TOKEN with the value available in
+ *Start Sending Logs section of https://user.app.logsense.com/start-sending-logs[user portal])</pre>
 </div>
 </div>
 </div>
@@ -602,7 +654,7 @@ java.lang.RuntimeException: That is really low temperature: -447
 </div>
 </div>
 <div class="paragraph">
-<p>If <code>CUSTOMER_TOKEN</code> was set correctly, you should be able to see those logs
+<p>If <code>LOGSENSE_TOKEN</code> was set correctly, you should be able to see those logs
 after logging in to <a href="https://app.logsense.com">app.logsense.com</a></p>
 </div>
 </div>
@@ -624,7 +676,7 @@ This can be achieved using following <code>pom.xml</code> settings:</p>
 		&lt;dependency&gt;
 			&lt;groupId&gt;com.logsense&lt;/groupId&gt;
 			&lt;artifactId&gt;logback-logsense&lt;/artifactId&gt;
-			&lt;version&gt;1.0&lt;/version&gt;
+			&lt;version&gt;1.1.0&lt;/version&gt;
 		&lt;/dependency&gt;
 
 		...
@@ -659,7 +711,7 @@ repository</a></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-02-26 15:05:27 +0100
+Last updated 2019-03-13 20:45:24 +0100
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

@@ -1,0 +1,104 @@
+:source-highlighter: highlight.js
+
+= Java tracing and performance monitoring
+
+LogSense agent is leveraging the https://opentracing.io/ initiative for creating
+a vendor-neutral APIs and instrumentation for distributed tracing. The source code
+is available at https://github.com/collectivesense/logsense-opentracing-agent/[logsense-opentracing-agent GitHub repository]
+and it is based on a https://github.com/collectivesense/logsense-opentracing[LogSense-dedicated tracer],
+https://github.com/opentracing-contrib/java-specialagent[OpenTracing Java specialagent] and a set of
+related libraries. This allows to use several instrumentations that allow to track:
+
+* JDBC API
+* Java Web Servlet API
+* JMS API
+* Concurrent API
+* OkHttp3
+* ElasticSearch
+* RxJava2
+* Kafka
+* Cassandra
+* Apache Camel
+* Mongo
+
+It is also to possible to use OpenTracing API and add custom tracing in code. Due to the vendor-neutral
+property of OpenTracing, it's easy to plug many Tracer outputs.
+
+=== *Step 1:* Download the agent JAR
+
+Download the
+https://github.com/collectivesense/logsense-opentracing-agent/releases/download/v1.0.0/logsense-opentracing-agent-1.0.0.jar[logsense-opentracing-agent-1.0.0.jar]
+file that includes the agent with all its dependencies
+
+=== *Step 2:* Include the agent and config when running JVM
+
+The options for JVM need to be modified to include additional pieces of information:
+
+The first piece is the agent JAR file itself, which is provided as:
+`-javaagent:/path/to/logsense-opentracing-agent-1.0.0.jar`
+
+In many cases this can be done by amending `JAVA_OPTIONS` environment variable or editing the actual
+script running the application.
+
+=== *Step 3:* Providing the `LOGSENSE_TOKEN`
+
+The token is needed to authenticate the data by Logsense and it can be found
+in the https://user.app.logsense.com/start-sending-logs[User portal]
+
+There are several options how it can be provided to the app
+
+* Option 1: As Java property, e.g. by adding `-Dlogsense.token=ENTER-TOKEN` to JVM options
+* Option 2: As environment variable, by setting `LOGSENSE_TOKEN=ENTER-TOKEN`
+* Option 3: By providing it inside a properties file, which location is provided by Java property:
+`-Dlogsense.config=/path/to/logsense.properties`. The file needs to include `logsense.token=ENTER-TOKEN`
+
+=== Examples
+
+Following are some examples how all of this can be put together
+
+Using environment variable:
+[source,bash]
+----
+$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -javaagent:logsense-opentracing-agent-1.0.0.jar -jar myapp.jar
+----
+
+Using Java property:
+[source,bash]
+----
+$ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar
+----
+
+Using config file:
+[source,bash]
+----
+$ cat logsense.properties
+logsense.token=aaa-111-bbb-222-ccc
+
+$ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.config=logsense.properties -jar myapp.jar
+----
+
+== Specific instructions
+
+In case of some application servers, Java 2 security options need to be updated:
+
+=== WebLogic
+
+Edit `WEBLOGIC_HOME/wlserver/server/lib/weblogic.policy` and add following entry:
+
+----
+grant codeBase "file:/path/to/logsense-opentracing-agent-1.0.0.jar" {
+    permission java.security.AllPermission;
+};
+
+----
+
+=== WebSphere
+
+Edit `WEBSPHERE_HOME/java/jre/lib/security/java.policy` and add following entry:
+
+----
+grant codeBase "file:/path/to/logsense-opentracing-agent-1.0.0.jar" {
+    permission java.security.AllPermission;
+    permission java.net.SocketPermission "logs.logsense.com", "connect,accept,resolve";
+};
+----

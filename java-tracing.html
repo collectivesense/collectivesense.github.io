@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Table of contents</title>
+<title>Java tracing and performance monitoring</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -432,118 +432,172 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Table of contents</h1>
+<h1>Java tracing and performance monitoring</h1>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>LogSense supports wide array of log sources through two popular
-protocols: <strong>syslog</strong> and <strong>fluentd</strong>. Either a generic library or a
-dedicated solution can be used with the only requirement being providing
-<code>CUSTOMER_TOKEN</code> (available in <strong>Customer Tokens</strong> section of the user portal) which
-allows to identify and authorize the data stream.</p>
+<p>LogSense agent is leveraging the <a href="https://opentracing.io/" class="bare">https://opentracing.io/</a> initiative for creating
+a vendor-neutral APIs and instrumentation for distributed tracing. The source code
+is available at <a href="https://github.com/collectivesense/logsense-opentracing-agent/">logsense-opentracing-agent GitHub repository</a>
+and it is based on a <a href="https://github.com/collectivesense/logsense-opentracing">LogSense-dedicated tracer</a>,
+<a href="https://github.com/opentracing-contrib/java-specialagent">OpenTracing Java specialagent</a> and a set of
+related libraries. This allows to use several instrumentations that allow to track:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>JDBC API</p>
+</li>
+<li>
+<p>Java Web Servlet API</p>
+</li>
+<li>
+<p>JMS API</p>
+</li>
+<li>
+<p>Concurrent API</p>
+</li>
+<li>
+<p>OkHttp3</p>
+</li>
+<li>
+<p>ElasticSearch</p>
+</li>
+<li>
+<p>RxJava2</p>
+</li>
+<li>
+<p>Kafka</p>
+</li>
+<li>
+<p>Cassandra</p>
+</li>
+<li>
+<p>Apache Camel</p>
+</li>
+<li>
+<p>Mongo</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>In case of choice between using <code>fluentd</code> and <code>syslog</code> protocols - it is
-recommended to go with <code>fluentd</code> due to a much better support of
-structured logs and better troubleshooting capabilities.</p>
+<p>It is also to possible to use OpenTracing API and add custom tracing in code. Due to the vendor-neutral
+property of OpenTracing, it&#8217;s easy to plug many Tracer outputs.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_step_1_download_the_agent_jar"><strong>Step 1:</strong> Download the agent JAR</h3>
+<div class="paragraph">
+<p>Download the
+<a href="https://github.com/collectivesense/logsense-opentracing-agent/releases/download/v1.0.0/logsense-opentracing-agent-1.0.0.jar">logsense-opentracing-agent-1.0.0.jar</a>
+file that includes the agent with all its dependencies</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_step_2_include_the_agent_and_config_when_running_jvm"><strong>Step 2:</strong> Include the agent and config when running JVM</h3>
+<div class="paragraph">
+<p>The options for JVM need to be modified to include additional pieces of information:</p>
+</div>
+<div class="paragraph">
+<p>The first piece is the agent JAR file itself, which is provided as:
+<code>-javaagent:/path/to/logsense-opentracing-agent-1.0.0.jar</code></p>
+</div>
+<div class="paragraph">
+<p>In many cases this can be done by amending <code>JAVA_OPTIONS</code> environment variable or editing the actual
+script running the application.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_step_3_providing_the_logsense_token"><strong>Step 3:</strong> Providing the <code>LOGSENSE_TOKEN</code></h3>
+<div class="paragraph">
+<p>The token is needed to authenticate the data by Logsense and it can be found
+in the <a href="https://user.app.logsense.com/start-sending-logs">User portal</a></p>
+</div>
+<div class="paragraph">
+<p>There are several options how it can be provided to the app</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Option 1: As Java property, e.g. by adding <code>-Dlogsense.token=ENTER-TOKEN</code> to JVM options</p>
+</li>
+<li>
+<p>Option 2: As environment variable, by setting <code>LOGSENSE_TOKEN=ENTER-TOKEN</code></p>
+</li>
+<li>
+<p>Option 3: By providing it inside a properties file, which location is provided by Java property:
+<code>-Dlogsense.config=/path/to/logsense.properties</code>. The file needs to include <code>logsense.token=ENTER-TOKEN</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_examples">Examples</h3>
+<div class="paragraph">
+<p>Following are some examples how all of this can be put together</p>
+</div>
+<div class="paragraph">
+<p>Using environment variable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -javaagent:logsense-opentracing-agent-1.0.0.jar -jar myapp.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using Java property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using config file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cat logsense.properties
+logsense.token=aaa-111-bbb-222-ccc
+
+$ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.config=logsense.properties -jar myapp.jar</code></pre>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_generic_setup">Generic setup</h2>
+<h2 id="_specific_instructions">Specific instructions</h2>
 <div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><a href="nc-test.html">One-liner test command using <code>nc</code></a></p>
-</li>
-<li>
-<p><a href="linux.html">Syslog protocol via <code>syslog-ng</code></a></p>
-</li>
-<li>
-<p><a href="fluentd.html">Generic <code>fluentd</code> forwarder config</a></p>
-</li>
-<li>
-<p><a href="fluentd-container.html">Docker <code>fluentd</code> forwarder</a></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>In case of some application servers, Java 2 security options need to be updated:</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_dedicated_configuration">Dedicated configuration</h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_programming_languages_and_application_servers">Programming languages and application servers</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="java.html">Java, Scala, Clojure, Kotlin, any other <strong>JVM</strong>-based technology logs</a></p>
-</li>
-<li>
-<p><a href="java.html#javaee">Java EE Web Application logs</a></p>
-</li>
-<li>
-<p><a href="java-tracing.html">Java Tracing and performance monitoring</a></p>
-</li>
-<li>
-<p><a href="nodejs.html">NodeJS</a></p>
-</li>
-<li>
-<p><a href="dot-net.html">.NET</a></p>
-</li>
-<li>
-<p><a href="python.html">Python</a></p>
-</li>
-</ul>
+<h3 id="_weblogic">WebLogic</h3>
+<div class="paragraph">
+<p>Edit <code>WEBLOGIC_HOME/wlserver/server/lib/weblogic.policy</code> and add following entry:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>grant codeBase "file:/path/to/logsense-opentracing-agent-1.0.0.jar" {
+    permission java.security.AllPermission;
+};</pre>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_cloud_services">Cloud Services</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="aws-cloudwatch.html">Collecting logs from EC2 instances, CloudTrail, Route 53, AWS Lambda and others</a></p>
-</li>
-</ul>
+<h3 id="_websphere">WebSphere</h3>
+<div class="paragraph">
+<p>Edit <code>WEBSPHERE_HOME/java/jre/lib/security/java.policy</code> and add following entry:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>grant codeBase "file:/path/to/logsense-opentracing-agent-1.0.0.jar" {
+    permission java.security.AllPermission;
+    permission java.net.SocketPermission "logs.logsense.com", "connect,accept,resolve";
+};</pre>
 </div>
-<div class="sect2">
-<h3 id="_operating_systems_and_services">Operating Systems and services</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="windows.html">Windows Event Logs (including both operating system and services, such as
-e.g. MS SQL)</a></p>
-</li>
-<li>
-<p><a href="linux.html">Linux logs using <code>syslog-ng</code></a></p>
-</li>
-<li>
-<p><a href="apache.html">Apache HTTP Server logs using <code>fluentd</code></a></p>
-</li>
-<li>
-<p><a href="nginx.html">nginx logs using <code>fluentd</code></a></p>
-</li>
-<li>
-<p><a href="kubernetes.html">Kubernetes cluster logs using <code>fluentd</code></a></p>
-</li>
-<li>
-<p><a href="docker.html">Docker containers logs</a></p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_other">Other</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Do you have an use case not covered by the instructions? <a href="mailto:testing@logsense.com">Contact us!</a></p>
-</li>
-</ul>
 </div>
 </div>
 </div>
@@ -551,8 +605,11 @@ e.g. MS SQL)</a></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-13 20:48:16 +0100
+Last updated 2019-03-14 09:10:45 +0100
 </div>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 </body>
 </html>

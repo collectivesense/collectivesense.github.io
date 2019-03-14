@@ -13,7 +13,7 @@ The depdendency is available as a Maven project. You can add it to your `pom.xml
 <dependency>
  <groupId>com.logsense</groupId>
  <artifactId>logback-logsense</artifactId>
- <version>1.0</version>
+ <version>1.1.0</version>
 </dependency>
 ----
 
@@ -75,7 +75,8 @@ public class Example {
 === *Step 3:* setup `logback.xml` to configure output
 
 Create `src/resources/logback.xml` file with following contents
-(filling-in `CUSTOMER_TOKEN` with the proper value, available in *Customer Tokens* section of the user portal):
+(filling-in `LOGSENSE_TOKEN` with the proper value, available in
+*Start Sending Logs section of https://user.app.logsense.com/start-sending-logs[user portal]):
 
 [source,xml]
 ----
@@ -87,7 +88,7 @@ Create `src/resources/logback.xml` file with following contents
     <!-- as provided by the LogSense app -->
     <appender name="LOGSENSE" class="com.logsense.logback.Appender" >
         <remoteHost>logs.logsense.com</remoteHost>
-        <csCustomerToken>CUSTOMER_TOKEN</csCustomerToken>
+        <logsenseToken>ENTER_YOUR_TOKEN</logsenseToken>
     </appender>
 
    <!-- This is just a standard STDOUT appender - keep it -->
@@ -107,6 +108,42 @@ Create `src/resources/logback.xml` file with following contents
 </configuration>
 ----
 
+==== Alternative way to provide `LOGSENSE_TOKEN`
+
+It is also possible to specify the token outside of `logback.xml` file, using either of:
+
+* Option 1: As Java property, e.g. by adding `-Dlogsense.token=ENTER-TOKEN` to JVM options
+* Option 2: As environment variable, by setting `LOGSENSE_TOKEN=ENTER-TOKEN`
+* Option 3: By providing it inside a properties file, which location is provided by Java property:
+`-Dlogsense.config=/path/to/logsense.properties`. The file needs to include `logsense.token=ENTER-TOKEN`
+
+
+Following are some examples how all of this can be put together
+
+Using environment variable:
+
+[source,bash]
+----
+$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -jar myapp.jar
+----
+
+Using Java property:
+
+[source,bash]
+----
+$ java -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar
+----
+
+Using config file:
+
+[source,bash]
+----
+$ cat logsense.properties
+logsense.token=aaa-111-bbb-222-ccc
+
+$ java -Dlogsense.config=logsense.properties -jar myapp.jar
+----
+
 == (Optional) testing sending logs through logback-logsense
 
 We have prepared a simple application which you can use to check if logs are being sent to LogSense.
@@ -118,13 +155,14 @@ $ git clone https://github.com/collectivesense/logback-logsense
 
 ----
 
-=== *Step 2:* Provide the `CUSTOMER_TOKEN` value
+=== *Step 2:* Provide the `LOGSENSE_TOKEN` value
 
 ----
 $ cd logback-logsense/example
 
 (edit src/main/resources/logback.xml using your favorite editor
- and replace CUSTOMER_TOKEN with the value available in *Customer Tokens* section of the user portal.)
+ and replace LOGSENSE_TOKEN with the value available in
+ *Start Sending Logs section of https://user.app.logsense.com/start-sending-logs[user portal])
 ----
 
 === *Step 3:* Run the application
@@ -154,7 +192,7 @@ java.lang.RuntimeException: That is really low temperature: -447
 ...
 ----
 
-If `CUSTOMER_TOKEN` was set correctly, you should be able to see those logs
+If `LOGSENSE_TOKEN` was set correctly, you should be able to see those logs
 after logging in to https://app.logsense.com[app.logsense.com]
 
 
@@ -172,7 +210,7 @@ This can be achieved using following `pom.xml` settings:
 		<dependency>
 			<groupId>com.logsense</groupId>
 			<artifactId>logback-logsense</artifactId>
-			<version>1.0</version>
+			<version>1.1.0</version>
 		</dependency>
 
 		...

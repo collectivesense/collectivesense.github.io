@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Table of contents</title>
+<title>Python using logsense-logger-python</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -432,118 +432,121 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Table of contents</h1>
+<h1>Python using logsense-logger-python</h1>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_step_1_install_the_plugin"><strong>Step 1:</strong> Install the plugin</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pip3 install -e git+https://github.com/collectivesense/logsense-logger-python#egg=logsense-logger</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_step_2_use_it"><strong>Step 2:</strong> Use it</h3>
+<div class="sect3">
+<h4 id="_plain_logging">Plain logging</h4>
 <div class="paragraph">
-<p>LogSense supports wide array of log sources through two popular
-protocols: <strong>syslog</strong> and <strong>fluentd</strong>. Either a generic library or a
-dedicated solution can be used with the only requirement being providing
-<code>CUSTOMER_TOKEN</code> (available in <strong>Customer Tokens</strong> section of the user portal) which
-allows to identify and authorize the data stream.</p>
+<p>An example of using the plugin for regular logging purposes is following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from logsense.handler import LogSenseHandler
+from os import getenv
+import logging
+
+logsense_token = getenv('LOGSENSE_TOKEN', None)
+logging.getLogger().addHandler(LogSenseHandler(logsense_token))
+
+
+class Example:
+    def __init__(self):
+        self.bar = 42
+
+    def foo(self):
+        logging.info("Answer: {}".format(self.bar))
+
+
+if __name__ == "__main__":
+    ex = Example()
+    ex.foo()</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>In case of choice between using <code>fluentd</code> and <code>syslog</code> protocols - it is
-recommended to go with <code>fluentd</code> due to a much better support of
-structured logs and better troubleshooting capabilities.</p>
+<p>Now, just run the app, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code>LOGSENSE_TOKEN="aaaaaa-1111-bbbbbb" python sample_logging.py</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And your logs should flow to LogSense.</p>
+</div>
+<div class="sect4">
+<h5 id="_example">Example</h5>
+<div class="paragraph">
+<p>An example app can be found at
+<a href="https://github.com/collectivesense/logsense-logger-python/tree/master/example" class="bare">https://github.com/collectivesense/logsense-logger-python/tree/master/example</a></p>
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_generic_setup">Generic setup</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><a href="nc-test.html">One-liner test command using <code>nc</code></a></p>
-</li>
-<li>
-<p><a href="linux.html">Syslog protocol via <code>syslog-ng</code></a></p>
-</li>
-<li>
-<p><a href="fluentd.html">Generic <code>fluentd</code> forwarder config</a></p>
-</li>
-<li>
-<p><a href="fluentd-container.html">Docker <code>fluentd</code> forwarder</a></p>
-</li>
-</ul>
+<div class="sect3">
+<h4 id="_metrics">Metrics</h4>
+<div class="paragraph">
+<p>The package also includes a simple example on measuring method duration.
+All that needs to be done is providing
+<code>LOGSENSE_TOKEN</code> environment variable and than annotating
+methods that are to be measure with <code>@measure_duration()</code>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from logsense.metrics import measure_duration, setup_metrics
+from os import getenv
+
+logsense_token = getenv('LOGSENSE_TOKEN')
+setup_metrics('myapp', logsense_token)
+
+
+class MyComplexProcess:
+    def __init__(self, how_many_times):
+        self._how_many_times = how_many_times
+
+    @measure_duration(extracted_params=['a'])
+    def foo(self, a):
+        x = 0
+        for i in range(a*self._how_many_times):
+            x = x+1
+        return x</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Now, execution duration of <code>foo</code> will be tracked and sent to LogSense.</p>
 </div>
-<div class="sect1">
-<h2 id="_dedicated_configuration">Dedicated configuration</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_programming_languages_and_application_servers">Programming languages and application servers</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="java.html">Java, Scala, Clojure, Kotlin, any other <strong>JVM</strong>-based technology logs</a></p>
-</li>
-<li>
-<p><a href="java.html#javaee">Java EE Web Application logs</a></p>
-</li>
-<li>
-<p><a href="java-tracing.html">Java Tracing and performance monitoring</a></p>
-</li>
-<li>
-<p><a href="nodejs.html">NodeJS</a></p>
-</li>
-<li>
-<p><a href="dot-net.html">.NET</a></p>
-</li>
-<li>
-<p><a href="python.html">Python</a></p>
-</li>
-</ul>
+<div class="sect4">
+<h5 id="_example_2">Example</h5>
+<div class="paragraph">
+<p>An example is provided at
+<a href="https://github.com/collectivesense/logsense-logger-python/tree/master/example" class="bare">https://github.com/collectivesense/logsense-logger-python/tree/master/example</a></p>
+</div>
+<div class="paragraph">
+<p>To run it, execute following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ pip install Flask
+$ LOGSENSE_TOKEN=&lt;your token&gt; FLASK_APP=index.py flask run</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_cloud_services">Cloud Services</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="aws-cloudwatch.html">Collecting logs from EC2 instances, CloudTrail, Route 53, AWS Lambda and others</a></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>The example starts a basic HTTP server. Another example script can be use to execute
+calls and get a collection of records:</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ ./benchmark.py</code></pre>
 </div>
-<div class="sect2">
-<h3 id="_operating_systems_and_services">Operating Systems and services</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="windows.html">Windows Event Logs (including both operating system and services, such as
-e.g. MS SQL)</a></p>
-</li>
-<li>
-<p><a href="linux.html">Linux logs using <code>syslog-ng</code></a></p>
-</li>
-<li>
-<p><a href="apache.html">Apache HTTP Server logs using <code>fluentd</code></a></p>
-</li>
-<li>
-<p><a href="nginx.html">nginx logs using <code>fluentd</code></a></p>
-</li>
-<li>
-<p><a href="kubernetes.html">Kubernetes cluster logs using <code>fluentd</code></a></p>
-</li>
-<li>
-<p><a href="docker.html">Docker containers logs</a></p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_other">Other</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Do you have an use case not covered by the instructions? <a href="mailto:testing@logsense.com">Contact us!</a></p>
-</li>
-</ul>
 </div>
 </div>
 </div>
@@ -551,8 +554,11 @@ e.g. MS SQL)</a></p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-13 20:48:16 +0100
+Last updated 2019-03-14 09:12:38 +0100
 </div>
 </div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+<script>hljs.initHighlighting()</script>
 </body>
 </html>

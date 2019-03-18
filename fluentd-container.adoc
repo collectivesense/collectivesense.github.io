@@ -33,4 +33,4 @@ services:
       - "127.0.0.1:24224:24224"
 ----
 
-Adding `-p 127.0.0.1:24224:24224` will make Docker to listen on the local interface only.
+Adding `-p 127.0.0.1:24224:24224` will make Docker container to listen on the local interface only.

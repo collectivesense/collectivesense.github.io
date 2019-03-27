@@ -438,185 +438,51 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>To easily send logs from the Kubernetes cluster one can use <code>fluentd</code> deamonset.
-It&#8217;s source code can be found at <a href="https://github.com/fluent/fluentd-kubernetes-daemonset">fluentd kubernetes deamonset</a> GitHub page.</p>
+<p>The following <a href="https://github.com/collectivesense/logsense-fluentd-kubernetes-daemonset">Kubernetes logs collector</a> can be used to push your Kubernetes logs to LogSense.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_run_it">How to run it</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Setting this up is as easy as two <code>kubectl</code> commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create secret -n kube-system generic logsense-token --from-literal=logsense-token=YOUR-LOGSENSE-TOKEN-HERE
+
+kubectl apply -f https://raw.githubusercontent.com/collectivesense/logsense-fluentd-kubernetes-daemonset/master/logsense-fluentd-daemonset-logsense.yaml</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_how_does_it_work">How does it work</h3>
+<h3 id="_rbac_rules">RBAC rules</h3>
 <div class="paragraph">
-<p>The deamonset creates a logging agent pod on every node of the Kubernetes cluster
-and takes care of the logs collection and distribution.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_how_to_run_it">How to run it</h3>
-<div class="paragraph">
-<p>The following deamonset spec file can be used to send logs from the Kubernetes cluster.</p>
-</div>
-<div class="paragraph">
-<p>Please remember to replace the <code>CUSTOMER_TOKEN</code> string with your token.</p>
+<p>If your cluster uses RBAC Authorization then you need to use some additional configuration. In such case please use the following spec file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: fluentd-logsense
-  namespace: kube-system
-data:
-  fluent.conf: |
-    @include kubernetes.conf
-
-    &lt;filter **&gt;
-      @type record_transformer
-      &lt;record&gt;
-        cs_customer_token CUSTOMER_TOKEN
-      &lt;/record&gt;
-    &lt;/filter&gt;
-
-    &lt;match **&gt;
-      @type forward
-      send_timeout 60s
-      recover_wait 10s
-      hard_timeout 60s
-      transport tls
-      tls_verify_hostname true
-      &lt;server&gt;
-        host logs.logsense.com
-        port 32714
-      &lt;/server&gt;
-    &lt;/match&gt;
-
----
-apiVersion: extensions/v1beta1
-kind: DaemonSet
-metadata:
-  name: fluentd-logsense
-  namespace: kube-system
-  labels:
-    k8s-app: fluentd-logging
-    version: v1
-    kubernetes.io/cluster-service: "true"
-spec:
-  updateStrategy:
-    type: RollingUpdate
-  template:
-    metadata:
-      labels:
-        k8s-app: fluentd-logging
-        version: v1
-        kubernetes.io/cluster-service: "true"
-    spec:
-      tolerations:
-        - key: node-role.kubernetes.io/master
-          effect: NoSchedule
-      containers:
-        - name: fluentd-logsense
-          image: fluent/fluentd-kubernetes-daemonset:v1.3-debian-gcs
-          resources:
-            limits:
-              memory: 200Mi
-            requests:
-              cpu: 100m
-              memory: 200Mi
-          volumeMounts:
-            - name: varlog
-              mountPath: /var/log
-            - name: varlibdockercontainers
-              mountPath: /var/lib/docker/containers
-              readOnly: true
-            - name: config
-              mountPath: /fluentd/etc/fluent.conf
-              subPath: fluent.conf
-      terminationGracePeriodSeconds: 30
-      volumes:
-        - name: varlog
-          hostPath:
-            path: /var/log
-        - name: varlibdockercontainers
-          hostPath:
-            path: /var/lib/docker/containers
-        - name: config
-          configMap:
-            name: fluentd-logsense</pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/collectivesense/logsense-fluentd-kubernetes-daemonset/master/logsense-fluentd-daemonset-logsense-rbac.yaml</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_rbac_rules">RBAC rules</h4>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_does_it_work">How does it work</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>If your cluster uses RBAC Authorization then you need to use some additional configuration.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: fluentd-logsense
-  namespace: kube-system
-
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRole
-metadata:
-  name: fluentd-logsense
-  namespace: kube-system
-rules:
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-      - namespaces
-    verbs:
-      - get
-      - list
-      - watch
-
----
-kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata:
-  name: fluentd-logsense
-roleRef:
-  kind: ClusterRole
-  name: fluentd-logsense
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-  - kind: ServiceAccount
-    name: fluentd-logsense
-    namespace: kube-system</pre>
-</div>
+<p>The deamonset creates a logging agent pod on every node of the Kubernetes cluster and takes care of the logs collection and distribution.</p>
 </div>
 <div class="paragraph">
-<p>Also you need to use those rules in the deamonset spec:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>---
-apiVersion: extensions/v1beta1
-kind: DaemonSet
-metadata:
-  name: fluentd-logsense
-  ...
-spec:
-  ...
-  template:
-    ...
-    spec:
-      serviceAccount: fluentd-logsense
-      serviceAccountName: fluentd-logsense
-      ...</pre>
-</div>
+<p>It uses the <a href="https://github.com/fluent/fluentd-kubernetes-daemonset">Fluentd Kubernetes DeamonSet</a> underneath.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-06 09:41:32 UTC
+Last updated 2019-03-27 13:36:06 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Python using logsense-logger-python</title>
+<title>Python using logsense-logger</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -432,14 +432,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Python using logsense-logger-python</h1>
+<h1>Python using logsense-logger</h1>
 </div>
 <div id="content">
 <div class="sect2">
 <h3 id="_step_1_install_the_plugin"><strong>Step 1:</strong> Install the plugin</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pip3 install -e git+https://github.com/collectivesense/logsense-logger-python#egg=logsense-logger</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">pip3 install logsense-logger</code></pre>
 </div>
 </div>
 </div>
@@ -458,6 +458,7 @@ import logging
 
 logsense_token = getenv('LOGSENSE_TOKEN', None)
 logging.getLogger().addHandler(LogSenseHandler(logsense_token))
+logging.getLogger().setLevel(logging.INFO)
 
 
 class Example:
@@ -554,7 +555,7 @@ calls and get a collection of records:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-14 09:12:38 +0100
+Last updated 2019-04-05 14:21:26 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

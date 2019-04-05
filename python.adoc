@@ -1,12 +1,12 @@
 :source-highlighter: highlight.js
 
-= Python using logsense-logger-python
+= Python using logsense-logger
 
 === *Step 1:* Install the plugin
 
 [source,bash]
 ----
-pip3 install -e git+https://github.com/collectivesense/logsense-logger-python#egg=logsense-logger
+pip3 install logsense-logger
 ----
 
 
@@ -24,6 +24,7 @@ import logging
 
 logsense_token = getenv('LOGSENSE_TOKEN', None)
 logging.getLogger().addHandler(LogSenseHandler(logsense_token))
+logging.getLogger().setLevel(logging.INFO)
 
 
 class Example:

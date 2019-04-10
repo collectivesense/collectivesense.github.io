@@ -464,8 +464,7 @@ download the MSI package and install it.</p>
 <div class="title">Note</div>
 </td>
 <td class="content">
-Please replace <code>CUSTOMER_TOKEN</code> with the value available in <strong>Customer Tokens</strong> section of
-the user portal.
+Please replace <code>LOGSENSE_TOKEN</code> with the value available in <a href="https://user.app.logsense.com/start-sending-logs">User portal</a>.
 </td>
 </tr>
 </table>
@@ -479,13 +478,14 @@ the user portal.
 	        &lt;Select Path="Application"&gt;*&lt;/Select&gt; \
 	        &lt;Select Path="System"&gt;*&lt;/Select&gt; \
 	        &lt;Select Path="Security"&gt;*&lt;/Select&gt; \
+			&lt;Select Path="Directory Service"&gt;*&lt;/Select&gt; \
 	   &lt;/Query&gt; \
     &lt;/QueryList&gt;
 
     Exec to_syslog_ietf();
 
     Exec $raw_event = to_json();
-    Exec $raw_event = replace($raw_event, $raw_event, '[][CUSTOMER_TOKEN]' + $raw_event);
+    Exec $raw_event = replace($raw_event, $raw_event, '[][LOGSENSE_TOKEN]' + $raw_event);
 &lt;/Input&gt;
 
 &lt;Output logsense&gt;
@@ -497,7 +497,11 @@ the user portal.
 
 &lt;Route logsense_msevents&gt;
     Path msevents =&gt; logsense
-&lt;/Route&gt;</code></pre>
+&lt;/Route&gt;
+
+&lt;Extension json&gt;
+    Module    xm_json
+&lt;/Extension&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -516,10 +520,6 @@ the user portal.
 
 &lt;Extension _exec&gt;
     Module    xm_exec
-&lt;/Extension&gt;
-
-&lt;Extension json&gt;
-    Module    xm_json
 &lt;/Extension&gt;</code></pre>
 </div>
 </div>
@@ -545,7 +545,7 @@ records to logsense.com, where they should be visible in the logs view
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-02-28 14:44:10 +0100
+Last updated 2019-04-10 23:42:24 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

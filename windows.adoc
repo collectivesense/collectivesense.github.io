@@ -15,8 +15,7 @@ download the MSI package and install it.
 
 Open the config file which by default is installed in `C:\Program Files (x86)\nxlog\conf\nxlog.conf` and add following entries (administrator privileges are needed to do so).
 
-NOTE: Please replace `CUSTOMER_TOKEN` with the value available in *Customer Tokens* section of
-the user portal.
+NOTE: Please replace `LOGSENSE_TOKEN` with the value available in https://user.app.logsense.com/start-sending-logs[User portal].
 
 [source,xml]
 ....
@@ -28,13 +27,14 @@ the user portal.
 	        <Select Path="Application">*</Select> \
 	        <Select Path="System">*</Select> \
 	        <Select Path="Security">*</Select> \
+			<Select Path="Directory Service">*</Select> \
 	   </Query> \
     </QueryList>
 
     Exec to_syslog_ietf();
 
     Exec $raw_event = to_json();
-    Exec $raw_event = replace($raw_event, $raw_event, '[][CUSTOMER_TOKEN]' + $raw_event);
+    Exec $raw_event = replace($raw_event, $raw_event, '[][LOGSENSE_TOKEN]' + $raw_event);
 </Input>
 
 <Output logsense>
@@ -48,6 +48,9 @@ the user portal.
     Path msevents => logsense
 </Route>
 
+<Extension json>
+    Module    xm_json
+</Extension>
 ....
 
 
@@ -66,10 +69,6 @@ In case you are using non-standard environment, make sure that the required modu
 
 <Extension _exec>
     Module    xm_exec
-</Extension>
-
-<Extension json>
-    Module    xm_json
 </Extension>
 
 ....

@@ -13,7 +13,7 @@ The depdendency is available as a Maven project. You can add it to your `pom.xml
 <dependency>
  <groupId>com.logsense</groupId>
  <artifactId>logback-logsense</artifactId>
- <version>1.1.0</version>
+ <version>1.1.1</version>
 </dependency>
 ----
 
@@ -210,7 +210,7 @@ This can be achieved using following `pom.xml` settings:
 		<dependency>
 			<groupId>com.logsense</groupId>
 			<artifactId>logback-logsense</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.1</version>
 		</dependency>
 
 		...

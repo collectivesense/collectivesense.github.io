@@ -440,8 +440,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>LogSense agent is leveraging the <a href="https://opentracing.io/" class="bare">https://opentracing.io/</a> initiative for creating
 a vendor-neutral APIs and instrumentation for distributed tracing. The source code
-is available at <a href="https://github.com/collectivesense/logsense-opentracing-agent/">logsense-opentracing-agent GitHub repository</a>
-and it is based on a <a href="https://github.com/collectivesense/logsense-opentracing">LogSense-dedicated tracer</a>,
+is available at <a href="https://github.com/logsenseapp/logsense-opentracing-agent/">logsense-opentracing-agent GitHub repository</a>
+and it is based on a <a href="https://github.com/logsenseapp/logsense-opentracing">LogSense-dedicated tracer</a>,
 <a href="https://github.com/opentracing-contrib/java-specialagent">OpenTracing Java specialagent</a> and a set of
 related libraries. This allows to use several instrumentations that allow to track:</p>
 </div>
@@ -492,7 +492,7 @@ property of OpenTracing, it&#8217;s easy to plug many Tracer outputs.</p>
 <h3 id="_step_1_download_the_agent_jar"><strong>Step 1:</strong> Download the agent JAR</h3>
 <div class="paragraph">
 <p>Download the
-<a href="https://github.com/collectivesense/logsense-opentracing-agent/releases/download/v1.0.0/logsense-opentracing-agent-1.0.0.jar">logsense-opentracing-agent-1.0.0.jar</a>
+<a href="https://github.com/logsenseapp/logsense-opentracing-agent/releases/download/v1.1.5/logsense-opentracing-agent-1.1.5.jar">logsense-opentracing-agent-1.1.5.jar</a>
 file that includes the agent with all its dependencies</p>
 </div>
 </div>
@@ -503,7 +503,7 @@ file that includes the agent with all its dependencies</p>
 </div>
 <div class="paragraph">
 <p>The first piece is the agent JAR file itself, which is provided as:
-<code>-javaagent:/path/to/logsense-opentracing-agent-1.0.0.jar</code></p>
+<code>-javaagent:/path/to/logsense-opentracing-agent-1.1.5.jar</code></p>
 </div>
 <div class="paragraph">
 <p>In many cases this can be done by amending <code>JAVA_OPTIONS</code> environment variable or editing the actual
@@ -544,7 +544,7 @@ in the <a href="https://user.app.logsense.com/start-sending-logs">User portal</a
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -javaagent:logsense-opentracing-agent-1.0.0.jar -jar myapp.jar</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -javaagent:logsense-opentracing-agent-1.1.5.jar -jar myapp.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -552,7 +552,7 @@ in the <a href="https://user.app.logsense.com/start-sending-logs">User portal</a
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ java -javaagent:logsense-opentracing-agent-1.1.5.jar -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -563,7 +563,7 @@ in the <a href="https://user.app.logsense.com/start-sending-logs">User portal</a
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cat logsense.properties
 logsense.token=aaa-111-bbb-222-ccc
 
-$ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.config=logsense.properties -jar myapp.jar</code></pre>
+$ java -javaagent:logsense-opentracing-agent-1.1.5.jar -Dlogsense.config=logsense.properties -jar myapp.jar</code></pre>
 </div>
 </div>
 </div>
@@ -580,7 +580,7 @@ $ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.config=logsens
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>grant codeBase "file:/path/to/logsense-opentracing-agent-1.0.0.jar" {
+<pre>grant codeBase "file:/path/to/logsense-opentracing-agent-1.1.5.jar" {
     permission java.security.AllPermission;
 };</pre>
 </div>
@@ -593,7 +593,7 @@ $ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.config=logsens
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>grant codeBase "file:/path/to/logsense-opentracing-agent-1.0.0.jar" {
+<pre>grant codeBase "file:/path/to/logsense-opentracing-agent-1.1.5.jar" {
     permission java.security.AllPermission;
     permission java.net.SocketPermission "logs.logsense.com", "connect,accept,resolve";
 };</pre>
@@ -605,7 +605,7 @@ $ java -javaagent:logsense-opentracing-agent-1.0.0.jar -Dlogsense.config=logsens
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-14 09:10:45 +0100
+Last updated 2019-05-25 23:03:10 +0200
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

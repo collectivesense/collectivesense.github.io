@@ -13,7 +13,7 @@ The depdendency is available as a Maven project. You can add it to your `pom.xml
 <dependency>
  <groupId>com.logsense</groupId>
  <artifactId>logback-logsense</artifactId>
- <version>1.1.1</version>
+ <version>1.1.5</version>
 </dependency>
 ----
 
@@ -38,7 +38,7 @@ public class Example {
 ----
 
 The integration source code is available publicly at
-https://github.com/collectivesense/logback-logsense[https://github.com/collectivesense/logback-logsense]
+https://github.com/logsenseapp/logback-logsense[https://github.com/logsenseapp/logback-logsense]
 
 
 === *Step 2 (Optional):* Add migration dependency if you are using `log4j`
@@ -151,7 +151,7 @@ We have prepared a simple application which you can use to check if logs are bei
 === *Step 1:* Clone `logback-logsense` repository
 
 ----
-$ git clone https://github.com/collectivesense/logback-logsense
+$ git clone https://github.com/logsenseapp/logback-logsense
 
 ----
 
@@ -210,7 +210,7 @@ This can be achieved using following `pom.xml` settings:
 		<dependency>
 			<groupId>com.logsense</groupId>
 			<artifactId>logback-logsense</artifactId>
-			<version>1.1.1</version>
+			<version>1.1.5</version>
 		</dependency>
 
 		...

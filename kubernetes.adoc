@@ -2,7 +2,9 @@
 
 = Pushing logs from the Kubernetes cluster using a fluentd
 
-The following https://github.com/collectivesense/logsense-fluentd-kubernetes-daemonset[Kubernetes logs collector] can be used to push your Kubernetes logs to LogSense.
+The following https://github.com/logsenseapp/fluentd-kubernetes-daemonset[Kubernetes logs collector] can be used to push your Kubernetes logs to LogSense.
+
+It uses the https://hub.docker.com/r/logsenseapp/fluentd-kubernetes-daemonset[Docker images]
 
 == How to run it
 Setting this up is as easy as two `kubectl` commands:
@@ -11,7 +13,7 @@ Setting this up is as easy as two `kubectl` commands:
 ----
 kubectl create secret -n kube-system generic logsense-token --from-literal=logsense-token=YOUR-LOGSENSE-TOKEN-HERE
 
-kubectl apply -f https://raw.githubusercontent.com/collectivesense/logsense-fluentd-kubernetes-daemonset/master/logsense-fluentd-daemonset-logsense.yaml
+kubectl apply -f https://raw.githubusercontent.com/logsenseapp/fluentd-kubernetes-daemonset/master/logsense-daemonset.yaml
 ----
 
 === RBAC rules
@@ -19,7 +21,7 @@ If your cluster uses RBAC Authorization then you need to use some additional con
 
 [source,bash]
 ----
-kubectl apply -f https://raw.githubusercontent.com/collectivesense/logsense-fluentd-kubernetes-daemonset/master/logsense-fluentd-daemonset-logsense-rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/logsenseapp/fluentd-kubernetes-daemonset/master/logsense-daemonset-rbac.yaml
 ----
 
 == How does it work

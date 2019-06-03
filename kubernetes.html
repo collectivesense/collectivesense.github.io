@@ -438,7 +438,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>The following <a href="https://github.com/collectivesense/logsense-fluentd-kubernetes-daemonset">Kubernetes logs collector</a> can be used to push your Kubernetes logs to LogSense.</p>
+<p>The following <a href="https://github.com/logsenseapp/fluentd-kubernetes-daemonset">Kubernetes logs collector</a> can be used to push your Kubernetes logs to LogSense.</p>
+</div>
+<div class="paragraph">
+<p>It uses the <a href="https://hub.docker.com/r/logsenseapp/fluentd-kubernetes-daemonset">Docker images</a></p>
 </div>
 </div>
 </div>
@@ -452,7 +455,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl create secret -n kube-system generic logsense-token --from-literal=logsense-token=YOUR-LOGSENSE-TOKEN-HERE
 
-kubectl apply -f https://raw.githubusercontent.com/collectivesense/logsense-fluentd-kubernetes-daemonset/master/logsense-fluentd-daemonset-logsense.yaml</code></pre>
+kubectl apply -f https://raw.githubusercontent.com/logsenseapp/fluentd-kubernetes-daemonset/master/logsense-daemonset.yaml</code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -462,7 +465,7 @@ kubectl apply -f https://raw.githubusercontent.com/collectivesense/logsense-flue
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/collectivesense/logsense-fluentd-kubernetes-daemonset/master/logsense-fluentd-daemonset-logsense-rbac.yaml</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/logsenseapp/fluentd-kubernetes-daemonset/master/logsense-daemonset-rbac.yaml</code></pre>
 </div>
 </div>
 </div>
@@ -482,7 +485,7 @@ kubectl apply -f https://raw.githubusercontent.com/collectivesense/logsense-flue
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-27 13:36:06 UTC
+Last updated 2019-06-03 12:12:32 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

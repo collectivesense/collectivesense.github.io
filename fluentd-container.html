@@ -436,10 +436,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="paragraph">
-<p>The following <a href="https://hub.docker.com/r/collectivesense/logsense-forwarder">Logsense forwarder image</a> can be used to set up your <code>fluentd</code> forwarder as Docker container.</p>
+<p>The following <a href="https://hub.docker.com/r/logsenseapp/fluentd-forwarder">Logsense forwarder image</a> can be used to set up your <code>fluentd</code> forwarder as Docker container.</p>
 </div>
 <div class="paragraph">
-<p>The source code can be found in our <a href="https://github.com/collectivesense/logsense-fluentd-forwarder">GitHub repository</a></p>
+<p>The source code can be found in our <a href="https://github.com/logsenseapp/fluentd-forwarder">GitHub repository</a></p>
 </div>
 <div class="paragraph">
 <p>It can be run as follow:</p>
@@ -447,9 +447,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ docker run \
-  --env LOGSENSE_TOKEN="your logsense token" \
+  --env "LOGSENSE_TOKEN=your logsense token" \
   -p 127.0.0.1:24224:24224 \
-  collectivesense/logsense-forwarder</code></pre>
+  logsenseapp/fluentd-forwarder</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -464,9 +464,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 
 services:
   logsense-forwarder:
-    image: collectivesense/logsense-forwarder
+    image: logsenseapp/fluentd-forwarder
     environment:
-      - LOGSENSE_TOKEN="your logsense token"
+      - "LOGSENSE_TOKEN=your logsense token"
     ports:
       - "127.0.0.1:24224:24224"</code></pre>
 </div>
@@ -477,7 +477,7 @@ services:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2019-03-18 09:05:58 UTC
+Last updated 2019-06-03 12:04:37 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github.min.css">

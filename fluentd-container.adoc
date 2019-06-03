@@ -2,18 +2,18 @@
 
 = Docker `fluentd` forwarder image
 
-The following https://hub.docker.com/r/collectivesense/logsense-forwarder[Logsense forwarder image] can be used to set up your `fluentd` forwarder as Docker container.
+The following https://hub.docker.com/r/logsenseapp/fluentd-forwarder[Logsense forwarder image] can be used to set up your `fluentd` forwarder as Docker container.
 
-The source code can be found in our https://github.com/collectivesense/logsense-fluentd-forwarder[GitHub repository]
+The source code can be found in our https://github.com/logsenseapp/fluentd-forwarder[GitHub repository]
 
 It can be run as follow:
 
 [source,bash]
 ----
 $ docker run \
-  --env LOGSENSE_TOKEN="your logsense token" \
+  --env "LOGSENSE_TOKEN=your logsense token" \
   -p 127.0.0.1:24224:24224 \
-  collectivesense/logsense-forwarder
+  logsenseapp/fluentd-forwarder
 ----
 
 Please remember to replace the `"your logsense token"` string with your token.
@@ -26,9 +26,9 @@ version: "3"
 
 services:
   logsense-forwarder:
-    image: collectivesense/logsense-forwarder
+    image: logsenseapp/fluentd-forwarder
     environment:
-      - LOGSENSE_TOKEN="your logsense token"
+      - "LOGSENSE_TOKEN=your logsense token"
     ports:
       - "127.0.0.1:24224:24224"
 ----

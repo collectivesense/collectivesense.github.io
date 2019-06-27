@@ -20,6 +20,8 @@ related libraries. This allows to use several instrumentations that allow to tra
 * Cassandra
 * Apache Camel
 * Mongo
+* Hazelcast
+* and many more
 
 It is also to possible to use OpenTracing API and add custom tracing in code. Due to the vendor-neutral
 property of OpenTracing, it's easy to plug many Tracer outputs.
@@ -27,15 +29,15 @@ property of OpenTracing, it's easy to plug many Tracer outputs.
 === *Step 1:* Download the agent JAR
 
 Download the
-https://github.com/logsenseapp/logsense-opentracing-agent/releases/download/v1.1.5/logsense-opentracing-agent-1.1.5.jar[logsense-opentracing-agent-1.1.5.jar]
+https://github.com/logsenseapp/logsense-opentracing-agent/releases/download/v.1.1.8-beta/logsense-opentracing-agent-1.1.8-beta.jar[logsense-opentracing-agent-1.1.8-beta.jar]
 file that includes the agent with all its dependencies
 
 === *Step 2:* Include the agent and config when running JVM
 
-The options for JVM need to be modified to include additional pieces of information:
+The options for JVM need to be modified to include additional pieces of information, location of the 
+JAR file with agent and name of the tracer:
 
-The first piece is the agent JAR file itself, which is provided as:
-`-javaagent:/path/to/logsense-opentracing-agent-1.1.5.jar`
+`-Dsa.tracer=logsense -javaagent:/path/to/logsense-opentracing-agent-1.1.8-beta.jar`
 
 In many cases this can be done by amending `JAVA_OPTIONS` environment variable or editing the actual
 script running the application.
@@ -52,20 +54,25 @@ There are several options how it can be provided to the app
 * Option 3: By providing it inside a properties file, which location is provided by Java property:
 `-Dlogsense.config=/path/to/logsense.properties`. The file needs to include `logsense.token=ENTER-TOKEN`
 
-=== Examples
+=== *Step 4:* (Optional) adding service name
+
+It is possible to identify each instance with `logsense.service.name` parameter, which can be provided either as a Java property
+(`-Dlogsense.service.name=...`) or as environment variable (`LOGSENSE_SERVICE_NAME=...`).
+
+== Examples
 
 Following are some examples how all of this can be put together
 
 Using environment variable:
 [source,bash]
 ----
-$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -javaagent:logsense-opentracing-agent-1.1.5.jar -jar myapp.jar
+$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.8-beta.jar -jar myapp.jar
 ----
 
 Using Java property:
 [source,bash]
 ----
-$ java -javaagent:logsense-opentracing-agent-1.1.5.jar -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar
+$ java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.8-beta.jar -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar
 ----
 
 Using config file:
@@ -74,10 +81,10 @@ Using config file:
 $ cat logsense.properties
 logsense.token=aaa-111-bbb-222-ccc
 
-$ java -javaagent:logsense-opentracing-agent-1.1.5.jar -Dlogsense.config=logsense.properties -jar myapp.jar
+$ java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.8-beta.jar -Dlogsense.config=logsense.properties -jar myapp.jar
 ----
 
-== Specific instructions
+== Additional steps for WebLogic and WebSphere
 
 In case of some application servers, Java 2 security options need to be updated:
 

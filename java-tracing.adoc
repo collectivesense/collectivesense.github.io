@@ -29,7 +29,7 @@ property of OpenTracing, it's easy to plug many Tracer outputs.
 === *Step 1:* Download the agent JAR
 
 Download the
-https://github.com/logsenseapp/logsense-opentracing-agent/releases/download/v.1.1.8-beta/logsense-opentracing-agent-1.1.8-beta.jar[logsense-opentracing-agent-1.1.8-beta.jar]
+https://github.com/logsenseapp/logsense-opentracing-agent/releases/download/v.1.1.9/logsense-opentracing-agent-1.1.9.jar[logsense-opentracing-agent-1.1.9.jar]
 file that includes the agent with all its dependencies
 
 === *Step 2:* Include the agent and config when running JVM
@@ -37,7 +37,7 @@ file that includes the agent with all its dependencies
 The options for JVM need to be modified to include additional pieces of information, location of the 
 JAR file with agent and name of the tracer:
 
-`-Dsa.tracer=logsense -javaagent:/path/to/logsense-opentracing-agent-1.1.8-beta.jar`
+`-Dsa.tracer=logsense -javaagent:/path/to/logsense-opentracing-agent-1.1.9.jar`
 
 In many cases this can be done by amending `JAVA_OPTIONS` environment variable or editing the actual
 script running the application.
@@ -66,13 +66,13 @@ Following are some examples how all of this can be put together
 Using environment variable:
 [source,bash]
 ----
-$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.8-beta.jar -jar myapp.jar
+$ LOGSENSE_TOKEN=aaa-111-bbb-222-ccc java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.9.jar -jar myapp.jar
 ----
 
 Using Java property:
 [source,bash]
 ----
-$ java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.8-beta.jar -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar
+$ java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.9.jar -Dlogsense.token=aaa-111-bbb-222-ccc -jar myapp.jar
 ----
 
 Using config file:
@@ -81,7 +81,7 @@ Using config file:
 $ cat logsense.properties
 logsense.token=aaa-111-bbb-222-ccc
 
-$ java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.8-beta.jar -Dlogsense.config=logsense.properties -jar myapp.jar
+$ java -Dsa.tracer=logsense -javaagent:logsense-opentracing-agent-1.1.9.jar -Dlogsense.config=logsense.properties -jar myapp.jar
 ----
 
 == Additional steps for WebLogic and WebSphere
@@ -93,7 +93,7 @@ In case of some application servers, Java 2 security options need to be updated:
 Edit `WEBLOGIC_HOME/wlserver/server/lib/weblogic.policy` and add following entry:
 
 ----
-grant codeBase "file:/path/to/logsense-opentracing-agent-1.1.5.jar" {
+grant codeBase "file:/path/to/logsense-opentracing-agent-1.1.9.jar" {
     permission java.security.AllPermission;
 };
 
@@ -104,7 +104,7 @@ grant codeBase "file:/path/to/logsense-opentracing-agent-1.1.5.jar" {
 Edit `WEBSPHERE_HOME/java/jre/lib/security/java.policy` and add following entry:
 
 ----
-grant codeBase "file:/path/to/logsense-opentracing-agent-1.1.5.jar" {
+grant codeBase "file:/path/to/logsense-opentracing-agent-1.1.9.jar" {
     permission java.security.AllPermission;
     permission java.net.SocketPermission "logs.logsense.com", "connect,accept,resolve";
 };

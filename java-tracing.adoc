@@ -29,7 +29,7 @@ property of OpenTracing, it's easy to plug many Tracer outputs.
 === *Step 1:* Download the agent JAR
 
 Download the
-https://github.com/logsenseapp/logsense-opentracing-agent/releases/download/v.1.1.9/logsense-opentracing-agent-1.1.9.jar[logsense-opentracing-agent-1.1.9.jar]
+https://github.com/logsenseapp/logsense-opentracing-agent/releases/download/v1.1.9/logsense-opentracing-agent-1.1.9.jar[logsense-opentracing-agent-1.1.9.jar]
 file that includes the agent with all its dependencies
 
 === *Step 2:* Include the agent and config when running JVM
